@@ -1,12 +1,16 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express'; // <-- Added for static files
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
-import { ValidationPipe } from '@nestjs/common';
+import { join } from 'path'; // <-- Added for resolving the uploads directory
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // 1. Tell NestJS we are specifically using Express underneath so we can serve static files
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // 1. Strict CORS: Only allow your specific Next.js frontend
+  // 2. Strict CORS: Only allow your specific Next.js frontend
   const allowedOrigins = process.env.FRONTEND_URLS?.split(',') || ['http://localhost:3000'];
   app.enableCors({
     origin: (origin, callback) => {
@@ -21,10 +25,13 @@ async function bootstrap() {
     credentials: true, // Required for secure JWT cookies later
   });
 
-  // 2. Helmet: Set 12+ security headers to prevent XSS and clickjacking
-  app.use(helmet());
+  // 3. Helmet: Set 12+ security headers to prevent XSS and clickjacking
+  // Note: crossOriginResourcePolicy must be 'cross-origin' so your frontend can load the uploaded images
+  app.use(helmet({ 
+    crossOriginResourcePolicy: { policy: "cross-origin" } 
+  }));
 
-  // 3. Global Validation & Sanitization
+  // 4. Global Validation & Sanitization
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // Strips any fields not defined in the DTO
@@ -32,6 +39,11 @@ async function bootstrap() {
       transform: true, // Automatically converts data to the right types
     }),
   );
+
+  // 5. Serve the 'uploads' folder publicly at the '/uploads' URL
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/',
+  });
 
   await app.listen(process.env.PORT || 3001);
 }
