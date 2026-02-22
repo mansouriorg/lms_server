@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// -----------------------------------------------------------------------------
+// ENUMS
+// -----------------------------------------------------------------------------
+
+enum Role {
+  STUDENT
+  CENTER_ADMIN
+  SUPER_ADMIN
+}
+
+enum StageStatus {
+  DRAFT
+  ACTIVE
+  FULL
+  COMPLETED
+  CANCELLED
+}
+
+enum BookingStatus {
+  PENDING
+  PAID
+  CANCELLED
+  REFUNDED
+}
+
+// -----------------------------------------------------------------------------
+// MODELS
+// -----------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String    
+  firstName     String
+  lastName      String
+  phone         String?
+  role          Role      @default(STUDENT)
+  
+  // Student-specific fields
+  licenseNumber String?
+  
+  // Relations
+  centerId      String?   
+  center        Center?   @relation(fields: [centerId], references: [id])
+  bookings      Booking[] 
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Center {
+  id           String   @id @default(cuid())
+  name         String
+  location     String
+  contactEmail String
+  contactPhone String
+  
+  // Relations
+  admins       User[]   
+  stages       Stage[]  
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Stage {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  dateStart   DateTime
+  dateEnd     DateTime
+  location    String
+  price       Float
+  capacity    Int
+  status      StageStatus @default(DRAFT)
+  instructor  String
+  
+  // Relations
+  centerId    String
+  center      Center      @relation(fields: [centerId], references: [id])
+  bookings    Booking[]
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  status          BookingStatus @default(PENDING)
+  
+  // Payment & Documents
+  stripeSessionId String?       @unique 
+  licenseFrontUrl String?       
+  licenseBackUrl  String?       
+  
+  // Relations
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  stageId         String
+  stage           Stage         @relation(fields: [stageId], references: [id])
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  @@unique([userId, stageId]) 
+}
