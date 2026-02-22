@@ -35,44 +35,53 @@ enum BookingStatus {
   REFUNDED
 }
 
+// <-- NEW: Enum for project grading
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  NEEDS_WORK
+}
+
 // -----------------------------------------------------------------------------
 // MODELS
 // -----------------------------------------------------------------------------
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  passwordHash  String    
-  firstName     String
-  lastName      String
-  phone         String?
-  role          Role      @default(STUDENT)
-  
+  id           String  @id @default(cuid())
+  email        String  @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  phone        String?
+  role         Role    @default(STUDENT)
+
   // Student-specific fields
   licenseNumber String?
-  
+
   // Relations
-  centerId      String?   
-  center        Center?   @relation(fields: [centerId], references: [id])
-  bookings      Booking[] 
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  centerId           String?
+  center             Center?             @relation(fields: [centerId], references: [id])
+  bookings           Booking[]
+  progresses         Progress[]
+  projectSubmissions ProjectSubmission[] // <-- NEW: Tracks user's submitted projects
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Center {
-  id           String   @id @default(cuid())
+  id           String @id @default(cuid())
   name         String
   location     String
   contactEmail String
   contactPhone String
-  
+
   // Relations
-  admins       User[]   
-  stages       Stage[]  
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  admins User[]
+  stages Stage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Stage {
@@ -86,33 +95,92 @@ model Stage {
   capacity    Int
   status      StageStatus @default(DRAFT)
   instructor  String
-  
+
   // Relations
-  centerId    String
-  center      Center      @relation(fields: [centerId], references: [id])
-  bookings    Booking[]
-  
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  centerId           String
+  center             Center              @relation(fields: [centerId], references: [id])
+  bookings           Booking[]
+  lessons            Lesson[]
+  projectSubmissions ProjectSubmission[] // <-- NEW: A stage has many project submissions
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Booking {
-  id              String        @id @default(cuid())
-  status          BookingStatus @default(PENDING)
-  
+  id     String        @id @default(cuid())
+  status BookingStatus @default(PENDING)
+
   // Payment & Documents
-  stripeSessionId String?       @unique 
-  licenseFrontUrl String?       
-  licenseBackUrl  String?       
-  
+  stripeSessionId String? @unique
+  licenseFrontUrl String?
+  licenseBackUrl  String?
+
   // Relations
-  userId          String
-  user            User          @relation(fields: [userId], references: [id])
-  stageId         String
-  stage           Stage         @relation(fields: [stageId], references: [id])
-  
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  
-  @@unique([userId, stageId]) 
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+  stageId String
+  stage   Stage  @relation(fields: [stageId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, stageId])
+}
+
+// -----------------------------------------------------------------------------
+// NEW E-LEARNING MODELS
+// -----------------------------------------------------------------------------
+
+model Lesson {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  videoUrl    String? // Link to YouTube, Vimeo, or S3
+  order       Int // Used to sort lessons (e.g., 1, 2, 3)
+
+  // Relations
+  stageId    String
+  stage      Stage      @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  progresses Progress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Progress {
+  id        String  @id @default(cuid())
+  completed Boolean @default(true)
+
+  // Relations
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  // A student can only complete a specific lesson once
+  @@unique([userId, lessonId])
+}
+
+// <-- NEW: Project Submission Model -->
+model ProjectSubmission {
+  id       String           @id @default(cuid())
+  repoUrl  String // Link to GitHub/GitLab
+  liveUrl  String? // Optional: Link to Vercel/Netlify hosting
+  feedback String? // <-- REMOVED @db.Text (Postgres handles this automatically!)
+  status   SubmissionStatus @default(PENDING)
+
+  // Relations
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stageId String // The bootcamp this project belongs to
+  stage   Stage  @relation(fields: [stageId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // A student should only have one active submission per bootcamp
+  @@unique([userId, stageId])
 }

@@ -2,10 +2,11 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express'; // <-- Added for static files
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'; // <-- Added for Swagger
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { join } from 'path'; // <-- Added for resolving the uploads directory
-import { HttpExceptionFilter } from './common/filters/http-exception.filter'; // <-- NEW IMPORT
+import { HttpExceptionFilter } from './common/filters/http-exception.filter'; 
 
 async function bootstrap() {
   // 1. Tell NestJS we are specifically using Express underneath so we can serve static files
@@ -41,13 +42,25 @@ async function bootstrap() {
     }),
   );
 
-  // --- NEW: Global Exception Filter ---
+  // 5. Global Exception Filter
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // 5. Serve the 'uploads' folder publicly at the '/uploads' URL
+  // 6. Serve the 'uploads' folder publicly at the '/uploads' URL
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',
   });
+
+  // --- NEW: Swagger Configuration ---
+  const config = new DocumentBuilder()
+    .setTitle('API Auto-École')
+    .setDescription('Documentation officielle de l\'API pour l\'application d\'auto-école')
+    .setVersion('1.0')
+    .addBearerAuth() // <-- Allows you to paste your JWT in the Swagger UI
+    .build();
+    
+  const document = SwaggerModule.createDocument(app, config);
+  // This serves the documentation at http://localhost:3001/api
+  SwaggerModule.setup('api', app, document); 
 
   await app.listen(process.env.PORT || 3001);
 }

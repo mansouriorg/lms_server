@@ -12,6 +12,8 @@ import { AuthModule } from './auth/auth.module';
 import { StagesModule } from './stages/stages.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { CentersModule } from './centers/centers.module';
+import { LessonsModule } from './lessons/lessons.module';
+import { ProjectSubmissionsModule } from './project-submissions/project-submissions.module';
 
 @Module({
   imports: [
@@ -44,6 +46,8 @@ import { CentersModule } from './centers/centers.module';
     StagesModule,
     BookingsModule,
     CentersModule,
+    LessonsModule,
+    ProjectSubmissionsModule,
   ],
   controllers: [AppController],
   providers: [
