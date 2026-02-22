@@ -63,7 +63,9 @@ model User {
   center             Center?             @relation(fields: [centerId], references: [id])
   bookings           Booking[]
   progresses         Progress[]
-  projectSubmissions ProjectSubmission[] // <-- NEW: Tracks user's submitted projects
+  projectSubmissions ProjectSubmission[]
+  questions          Question[] // <-- NEW: Questions asked by the user
+  replies            Reply[] // <-- NEW: Replies posted by the user
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -101,7 +103,7 @@ model Stage {
   center             Center              @relation(fields: [centerId], references: [id])
   bookings           Booking[]
   lessons            Lesson[]
-  projectSubmissions ProjectSubmission[] // <-- NEW: A stage has many project submissions
+  projectSubmissions ProjectSubmission[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -143,6 +145,7 @@ model Lesson {
   stageId    String
   stage      Stage      @relation(fields: [stageId], references: [id], onDelete: Cascade)
   progresses Progress[]
+  questions  Question[] // <-- NEW: Discussions attached to this specific lesson
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -164,12 +167,11 @@ model Progress {
   @@unique([userId, lessonId])
 }
 
-// <-- NEW: Project Submission Model -->
 model ProjectSubmission {
   id       String           @id @default(cuid())
   repoUrl  String // Link to GitHub/GitLab
   liveUrl  String? // Optional: Link to Vercel/Netlify hosting
-  feedback String? // <-- REMOVED @db.Text (Postgres handles this automatically!)
+  feedback String?
   status   SubmissionStatus @default(PENDING)
 
   // Relations
@@ -183,4 +185,41 @@ model ProjectSubmission {
 
   // A student should only have one active submission per bootcamp
   @@unique([userId, stageId])
+}
+
+// -----------------------------------------------------------------------------
+// Q&A / DISCUSSIONS MODELS
+// -----------------------------------------------------------------------------
+
+model Question {
+  id       String  @id @default(cuid())
+  title    String
+  body     String // The actual question/code snippet
+  resolved Boolean @default(false)
+
+  // Relations
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  replies Reply[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Reply {
+  id               String  @id @default(cuid())
+  body             String // The answer/fix
+  isAcceptedAnswer Boolean @default(false)
+
+  // Relations
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

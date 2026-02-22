@@ -14,6 +14,7 @@ import { BookingsModule } from './bookings/bookings.module';
 import { CentersModule } from './centers/centers.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { ProjectSubmissionsModule } from './project-submissions/project-submissions.module';
+import { QuestionsModule } from './questions/questions.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { ProjectSubmissionsModule } from './project-submissions/project-submissi
     CentersModule,
     LessonsModule,
     ProjectSubmissionsModule,
+    QuestionsModule,
   ],
   controllers: [AppController],
   providers: [
