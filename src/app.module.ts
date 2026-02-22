@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { StagesModule } from './stages/stages.module';
 import { BookingsModule } from './bookings/bookings.module';
+import { CentersModule } from './centers/centers.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { BookingsModule } from './bookings/bookings.module';
     AuthModule,
     StagesModule,
     BookingsModule,
+    CentersModule,
   ],
   controllers: [AppController],
   providers: [

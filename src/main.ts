@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { join } from 'path'; // <-- Added for resolving the uploads directory
+import { HttpExceptionFilter } from './common/filters/http-exception.filter'; // <-- NEW IMPORT
 
 async function bootstrap() {
   // 1. Tell NestJS we are specifically using Express underneath so we can serve static files
@@ -39,6 +40,9 @@ async function bootstrap() {
       transform: true, // Automatically converts data to the right types
     }),
   );
+
+  // --- NEW: Global Exception Filter ---
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   // 5. Serve the 'uploads' folder publicly at the '/uploads' URL
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
