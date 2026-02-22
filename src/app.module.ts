@@ -15,6 +15,8 @@ import { CentersModule } from './centers/centers.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { ProjectSubmissionsModule } from './project-submissions/project-submissions.module';
 import { QuestionsModule } from './questions/questions.module';
+import { OrdersModule } from './orders/orders.module';
+import { CouponsModule } from './coupons/coupons.module';
 
 @Module({
   imports: [
@@ -50,6 +52,8 @@ import { QuestionsModule } from './questions/questions.module';
     LessonsModule,
     ProjectSubmissionsModule,
     QuestionsModule,
+    OrdersModule,
+    CouponsModule,
   ],
   controllers: [AppController],
   providers: [

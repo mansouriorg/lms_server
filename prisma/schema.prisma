@@ -35,11 +35,17 @@ enum BookingStatus {
   REFUNDED
 }
 
-// <-- NEW: Enum for project grading
 enum SubmissionStatus {
   PENDING
   APPROVED
   NEEDS_WORK
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
 }
 
 // -----------------------------------------------------------------------------
@@ -64,8 +70,9 @@ model User {
   bookings           Booking[]
   progresses         Progress[]
   projectSubmissions ProjectSubmission[]
-  questions          Question[] // <-- NEW: Questions asked by the user
-  replies            Reply[] // <-- NEW: Replies posted by the user
+  questions          Question[]
+  replies            Reply[]
+  orders             Order[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,6 +111,7 @@ model Stage {
   bookings           Booking[]
   lessons            Lesson[]
   projectSubmissions ProjectSubmission[]
+  orderItems         OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -131,21 +139,72 @@ model Booking {
 }
 
 // -----------------------------------------------------------------------------
-// NEW E-LEARNING MODELS
+// NEW E-COMMERCE MODELS (COUPONS & ORDERS)
+// -----------------------------------------------------------------------------
+
+// <-- NEW: Coupon Model -->
+model Coupon {
+  id                 String    @id @default(cuid())
+  code               String    @unique // e.g., BLACKFRIDAY20
+  discountPercentage Float? // e.g., 20 for 20% off
+  discountAmount     Float? // e.g., 50 for fixed amount off
+  maxUses            Int? // Limit how many times it can be used globally
+  usedCount          Int       @default(0)
+  expiresAt          DateTime?
+  isActive           Boolean   @default(true)
+
+  // Relations
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  totalAmount Float // The final price the user pays AFTER discount
+  status      OrderStatus @default(PENDING)
+
+  // Relations
+  userId   String
+  user     User        @relation(fields: [userId], references: [id])
+  couponId String? // <-- NEW: Link the applied coupon
+  coupon   Coupon?     @relation(fields: [couponId], references: [id])
+  items    OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id    String @id @default(cuid())
+  price Float // Snapshot of the stage price at the exact moment of purchase
+
+  // Relations
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  stageId String
+  stage   Stage  @relation(fields: [stageId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+// -----------------------------------------------------------------------------
+// E-LEARNING MODELS
 // -----------------------------------------------------------------------------
 
 model Lesson {
   id          String  @id @default(cuid())
   title       String
   description String?
-  videoUrl    String? // Link to YouTube, Vimeo, or S3
-  order       Int // Used to sort lessons (e.g., 1, 2, 3)
+  videoUrl    String?
+  order       Int
 
   // Relations
   stageId    String
   stage      Stage      @relation(fields: [stageId], references: [id], onDelete: Cascade)
   progresses Progress[]
-  questions  Question[] // <-- NEW: Discussions attached to this specific lesson
+  questions  Question[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -163,27 +222,25 @@ model Progress {
 
   createdAt DateTime @default(now())
 
-  // A student can only complete a specific lesson once
   @@unique([userId, lessonId])
 }
 
 model ProjectSubmission {
   id       String           @id @default(cuid())
-  repoUrl  String // Link to GitHub/GitLab
-  liveUrl  String? // Optional: Link to Vercel/Netlify hosting
+  repoUrl  String
+  liveUrl  String?
   feedback String?
   status   SubmissionStatus @default(PENDING)
 
   // Relations
   userId  String
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  stageId String // The bootcamp this project belongs to
+  stageId String
   stage   Stage  @relation(fields: [stageId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // A student should only have one active submission per bootcamp
   @@unique([userId, stageId])
 }
 
@@ -194,7 +251,7 @@ model ProjectSubmission {
 model Question {
   id       String  @id @default(cuid())
   title    String
-  body     String // The actual question/code snippet
+  body     String
   resolved Boolean @default(false)
 
   // Relations
@@ -211,7 +268,7 @@ model Question {
 
 model Reply {
   id               String  @id @default(cuid())
-  body             String // The answer/fix
+  body             String
   isAcceptedAnswer Boolean @default(false)
 
   // Relations
