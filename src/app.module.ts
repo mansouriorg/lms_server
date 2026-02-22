@@ -17,6 +17,7 @@ import { ProjectSubmissionsModule } from './project-submissions/project-submissi
 import { QuestionsModule } from './questions/questions.module';
 import { OrdersModule } from './orders/orders.module';
 import { CouponsModule } from './coupons/coupons.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { CouponsModule } from './coupons/coupons.module';
     QuestionsModule,
     OrdersModule,
     CouponsModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [

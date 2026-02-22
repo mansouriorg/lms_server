@@ -139,10 +139,9 @@ model Booking {
 }
 
 // -----------------------------------------------------------------------------
-// NEW E-COMMERCE MODELS (COUPONS & ORDERS)
+// NEW E-COMMERCE MODELS (COUPONS, ORDERS, PRODUCTS)
 // -----------------------------------------------------------------------------
 
-// <-- NEW: Coupon Model -->
 model Coupon {
   id                 String    @id @default(cuid())
   code               String    @unique // e.g., BLACKFRIDAY20
@@ -168,7 +167,7 @@ model Order {
   // Relations
   userId   String
   user     User        @relation(fields: [userId], references: [id])
-  couponId String? // <-- NEW: Link the applied coupon
+  couponId String?
   coupon   Coupon?     @relation(fields: [couponId], references: [id])
   items    OrderItem[]
 
@@ -176,15 +175,36 @@ model Order {
   updatedAt DateTime @updatedAt
 }
 
+// <-- NEW: Product Model -->
+model Product {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  price       Float
+  fileUrl     String // The secure link to the PDF, ZIP, or code repository
+  isActive    Boolean @default(true)
+
+  // Relations
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// <-- UPDATED: OrderItem can now hold either a Stage OR a Product -->
 model OrderItem {
   id    String @id @default(cuid())
-  price Float // Snapshot of the stage price at the exact moment of purchase
+  price Float // Snapshot of the price at the exact moment of purchase
 
   // Relations
   orderId String
   order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  stageId String
-  stage   Stage  @relation(fields: [stageId], references: [id])
+
+  stageId String? // <-- Made Optional
+  stage   Stage?  @relation(fields: [stageId], references: [id])
+
+  productId String? // <-- NEW: Link to the digital product
+  product   Product? @relation(fields: [productId], references: [id])
 
   createdAt DateTime @default(now())
 }

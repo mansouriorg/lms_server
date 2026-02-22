@@ -7,6 +7,11 @@ export class CreateOrderDto {
   @IsString({ each: true, message: 'Chaque ID de bootcamp doit être une chaîne de caractères.' })
   stageIds: string[]; // An array of Bootcamp IDs they want to buy
 
+@IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  productIds?: string[]; // <-- NEW: Array of Digital Product IDs
+
   @IsOptional()
   @IsString()
   couponCode?: string; // <-- NEW: Optional discount code from the user
