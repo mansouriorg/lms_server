@@ -1,22 +1,26 @@
 // src/main.ts
 import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express'; // <-- Added for static files
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'; // <-- Added for Swagger
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config'; // <-- Added ConfigService
 import { AppModule } from './app.module';
 import helmet from 'helmet';
-import { join } from 'path'; // <-- Added for resolving the uploads directory
+import { join } from 'path';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter'; 
 
 async function bootstrap() {
-  // 1. Tell NestJS we are specifically using Express underneath so we can serve static files
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  
+  // Safely grab the ConfigService
+  const configService = app.get(ConfigService);
 
-  // 2. Strict CORS: Only allow your specific Next.js frontend
-  const allowedOrigins = process.env.FRONTEND_URLS?.split(',') || ['http://localhost:3000'];
+  // 1. Strict CORS using ConfigService
+  const frontendUrls = configService.get<string>('FRONTEND_URLS');
+  const allowedOrigins = frontendUrls ? frontendUrls.split(',') : ['http://localhost:3000'];
+  
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow if no origin (like a mobile app) or if in the allowed list
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -24,44 +28,46 @@ async function bootstrap() {
       }
     },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, // Required for secure JWT cookies later
+    credentials: true,
   });
 
-  // 3. Helmet: Set 12+ security headers to prevent XSS and clickjacking
-  // Note: crossOriginResourcePolicy must be 'cross-origin' so your frontend can load the uploaded images
+  // 2. Helmet Security
   app.use(helmet({ 
     crossOriginResourcePolicy: { policy: "cross-origin" } 
   }));
 
-  // 4. Global Validation & Sanitization
+  // 3. Global Validation & Sanitization
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Strips any fields not defined in the DTO
-      forbidNonWhitelisted: true, // Rejects the request if extra fields exist
-      transform: true, // Automatically converts data to the right types
+      whitelist: true,
+      forbidNonWhitelisted: true, 
+      transform: true,
     }),
   );
 
-  // 5. Global Exception Filter
+  // 4. Global Exception Filter
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // 6. Serve the 'uploads' folder publicly at the '/uploads' URL
+  // 5. Serve the 'uploads' folder publicly
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',
   });
 
-  // --- NEW: Swagger Configuration ---
+  // 6. Swagger Configuration (UPDATED TITLE)
   const config = new DocumentBuilder()
-    .setTitle('API Auto-École')
-    .setDescription('Documentation officielle de l\'API pour l\'application d\'auto-école')
+    .setTitle('E-Learning Academy API') // <-- Updated!
+    .setDescription('Official API documentation for the E-Learning platform') // <-- Updated!
     .setVersion('1.0')
-    .addBearerAuth() // <-- Allows you to paste your JWT in the Swagger UI
+    .addBearerAuth()
     .build();
     
   const document = SwaggerModule.createDocument(app, config);
-  // This serves the documentation at http://localhost:3001/api
   SwaggerModule.setup('api', app, document); 
 
-  await app.listen(process.env.PORT || 3001);
+  // 7. Start the Server using ConfigService
+  const port = configService.get<number>('PORT') || 3001;
+  await app.listen(port);
+  console.log(`🚀 Backend successfully running on: http://localhost:${port}`);
+  console.log(`📚 Swagger Docs available at: http://localhost:${port}/api`);
 }
 bootstrap();
