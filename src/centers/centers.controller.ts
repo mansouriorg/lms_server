@@ -1,6 +1,6 @@
 // src/centers/centers.controller.ts
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { Role } from 'generated/prisma/enums';
+import { Role } from 'src/generated/prisma/enums';
 import { CentersService } from './centers.service';
 import { CreateCenterDto } from './dto/create-center.dto';
 import { UpdateCenterDto } from './dto/update-center.dto';

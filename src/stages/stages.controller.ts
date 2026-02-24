@@ -1,6 +1,6 @@
 // src/stages/stages.controller.ts
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { Role } from 'generated/prisma/enums';
+import { Role } from 'src/generated/prisma/enums';
 import { StagesService } from './stages.service';
 import { CreateStageDto } from './dto/create-stage.dto';
 import { UpdateStageDto } from './dto/update-stage.dto'; // <-- Added this import

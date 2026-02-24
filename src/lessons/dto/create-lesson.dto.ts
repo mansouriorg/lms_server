@@ -1,24 +1,27 @@
-// src/lessons/dto/create-lesson.dto.ts
-import { IsString, IsNotEmpty, IsOptional, IsInt, Min, IsUrl } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsInt, IsUrl } from 'class-validator';
 
 export class CreateLessonDto {
   @IsString()
   @IsNotEmpty({ message: 'Le titre de la leçon est requis.' })
   title: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   description?: string;
 
+  @IsUrl({}, { message: 'L\'URL de la vidéo doit être valide.' })
   @IsOptional()
-  @IsUrl({}, { message: 'Veuillez fournir une URL de vidéo valide.' })
   videoUrl?: string;
 
   @IsInt()
-  @Min(1)
-  order: number; // For example: Lesson 1, Lesson 2
+  @IsOptional()
+  duration?: number; // Duration in minutes
+
+  @IsInt({ message: 'L\'ordre de la leçon est requis.' })
+  @IsNotEmpty()
+  order: number;
 
   @IsString()
-  @IsNotEmpty()
-  stageId: string; // The ID of the Bootcamp this lesson belongs to
+  @IsNotEmpty({ message: 'L\'ID du module est requis.' })
+  moduleId: string; // Changed from stageId to moduleId
 }

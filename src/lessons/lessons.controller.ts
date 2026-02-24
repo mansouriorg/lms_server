@@ -1,4 +1,3 @@
-// src/lessons/lessons.controller.ts
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { LessonsService } from './lessons.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
@@ -7,14 +6,14 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
-import { Role } from 'generated/prisma/enums';
+import { Role } from 'src/generated/prisma/enums'; // Adjust if your Prisma enums are located elsewhere
 
 @Controller('lessons')
 @UseGuards(JwtAuthGuard) // Requires login for EVERYTHING
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
 
-  // --- ADMIN ONLY: Curriculum Management ---
+  // --- ADMIN / INSTRUCTOR ONLY: Curriculum Management ---
 
   @Post()
   @UseGuards(RolesGuard)
@@ -39,9 +38,10 @@ export class LessonsController {
 
   // --- STUDENTS & ADMINS: Learning Experience ---
 
-  @Get('stage/:stageId')
-  findAllByStage(@Param('stageId') stageId: string) {
-    return this.lessonsService.findAllByStage(stageId);
+  // UPDATED: Now fetches lessons by Module ID instead of Stage ID
+  @Get('module/:moduleId')
+  findAllByModule(@Param('moduleId') moduleId: string) {
+    return this.lessonsService.findAllByModule(moduleId);
   }
 
   @Post(':id/complete')
@@ -52,8 +52,9 @@ export class LessonsController {
     return this.lessonsService.markAsCompleted(userId, lessonId);
   }
 
-  // --- NEW: Get Progress Endpoint ---
+  // --- Get Progress Endpoint ---
 
+  // This remains attached to the stageId since progress spans the entire course
   @Get('stage/:stageId/progress')
   getStageProgress(
     @Param('stageId') stageId: string,

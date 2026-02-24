@@ -1,61 +1,45 @@
-// src/bookings/bookings.service.ts
 import { 
   Injectable, 
   NotFoundException, 
   BadRequestException, 
-  ConflictException,
   ForbiddenException
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { BookingStatus } from 'generated/prisma/enums';
+// Assuming your DTO has been updated to match the new schema fields:
+// title, type, date, startTime, endTime, instructorId
+import { CreateBookingDto } from './dto/create-booking.dto'; 
+import { BookingStatus } from 'src/generated/prisma/enums';// Import from generated Prisma client
 
 @Injectable()
 export class BookingsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateBookingDto) {
-    // 1. Find the stage and count how many bookings it already has
-    const stage = await this.prisma.stage.findUnique({
-      where: { id: dto.stageId },
-      include: {
-        _count: {
-          select: { bookings: true }, // Prisma easily counts relations for us
-        },
-      },
+    // 1. Verify that the requested instructor actually exists
+    const instructor = await this.prisma.user.findUnique({
+      where: { id: dto.instructorId },
     });
 
-    if (!stage) {
-      throw new NotFoundException('Stage introuvable.');
+    if (!instructor) {
+      throw new NotFoundException('Instructeur introuvable.');
     }
 
-    // 2. Check if capacity is reached
-    if (stage._count.bookings >= stage.capacity) {
-      throw new BadRequestException('Ce stage est complet.');
+    // 2. Prevent the user from booking a session with themselves
+    if (userId === dto.instructorId) {
+      throw new BadRequestException('Vous ne pouvez pas réserver une session avec vous-même.');
     }
 
-    // 3. Check if the user already booked this stage
-    const existingBooking = await this.prisma.booking.findFirst({
-      where: {
-        userId: userId,
-        stageId: dto.stageId,
-      },
-    });
-
-    if (existingBooking) {
-      throw new ConflictException('Vous avez déjà réservé une place pour ce stage.');
-    }
-
-    // 4. Create the booking
+    // 3. Create the mentoring/webinar booking
     const newBooking = await this.prisma.booking.create({
       data: {
+        title: dto.title,
+        type: dto.type, // e.g., MENTORSHIP or WEBINAR
+        date: new Date(dto.date),
+        startTime: dto.startTime,
+        endTime: dto.endTime,
         userId: userId,
-        stageId: dto.stageId,
-      },
-      include: {
-        stage: {
-          select: { title: true, dateStart: true, location: true },
-        },
+        instructorId: dto.instructorId,
+        // status defaults to PENDING based on the Prisma schema
       },
     });
 
@@ -65,75 +49,49 @@ export class BookingsService {
     };
   }
 
-  // Allow a student to view their own booking history
+  // Allow a student to view their own booking history (Upcoming and Past)
   async getUserBookings(userId: string) {
     return this.prisma.booking.findMany({
       where: { userId: userId },
+      orderBy: [
+        { date: 'asc' }, // Show upcoming sessions first
+        { startTime: 'asc' }
+      ],
+    });
+  }
+
+  // Allow an instructor to view all the sessions students have booked with them
+  async getInstructorBookings(instructorId: string) {
+    return this.prisma.booking.findMany({
+      where: { instructorId: instructorId },
       include: {
-        stage: true,
+        user: {
+          select: { firstName: true, lastName: true, email: true, avatarUrl: true }
+        }
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [
+        { date: 'asc' },
+        { startTime: 'asc' }
+      ],
     });
   }
 
-  // Handle document uploads
-  async uploadDocuments(
-    userId: string, 
-    bookingId: string, 
-    files: { front?: Express.Multer.File[], back?: Express.Multer.File[] }
-  ) {
-    // 1. Find the booking
-    const booking = await this.prisma.booking.findUnique({
-      where: { id: bookingId },
-    });
+  // --- Admin / Instructor Methods ---
 
-    if (!booking) {
-      throw new NotFoundException('Réservation introuvable.');
-    }
-
-    // 2. Security Check: Ensure the user actually owns this booking
-    if (booking.userId !== userId) {
-      throw new ForbiddenException('Vous ne pouvez pas modifier cette réservation.');
-    }
-
-    // 3. Extract the file paths if they were uploaded
-    const frontUrl = files.front ? `/uploads/${files.front[0].filename}` : undefined;
-    const backUrl = files.back ? `/uploads/${files.back[0].filename}` : undefined;
-
-    // 4. Update the database
-    const updatedBooking = await this.prisma.booking.update({
-      where: { id: bookingId },
-      data: {
-        ...(frontUrl && { licenseFrontUrl: frontUrl }),
-        ...(backUrl && { licenseBackUrl: backUrl }),
-      },
-    });
-
-    return {
-      message: 'Documents téléchargés avec succès.',
-      booking: updatedBooking,
-    };
-  }
-
-  // --- NEW: Admin Methods ---
-
-  // 1. Fetch all bookings for admins to review
+  // 1. Fetch all bookings for platform admins to review
   async findAllForAdmin() {
     return this.prisma.booking.findMany({
       include: {
         user: {
-          select: { firstName: true, lastName: true, email: true, phone: true } // Safe user details
-        },
-        stage: {
-          select: { title: true, dateStart: true, center: true }
+          select: { firstName: true, lastName: true, email: true, phone: true } 
         }
       },
-      orderBy: { createdAt: 'desc' }, // Newest bookings first
+      orderBy: { createdAt: 'desc' }, // Newest booking requests first
     });
   }
 
-  // 2. Approve or Reject a booking
-  async updateStatus(bookingId: string, status: BookingStatus) {
+  // 2. Approve, Reject, or Complete a booking (and optionally add a meeting link)
+  async updateStatus(bookingId: string, status: BookingStatus, meetingLink?: string) {
     const booking = await this.prisma.booking.findUnique({
       where: { id: bookingId },
     });
@@ -144,7 +102,10 @@ export class BookingsService {
 
     const updatedBooking = await this.prisma.booking.update({
       where: { id: bookingId },
-      data: { status },
+      data: { 
+        status,
+        ...(meetingLink && { meetingLink }) // Only update the link if one was provided
+      },
     });
 
     return {

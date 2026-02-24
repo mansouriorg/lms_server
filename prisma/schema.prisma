@@ -2,8 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs" // <-- THIS IS THE MAGIC LINE!
 }
 
 datasource db {
@@ -48,6 +49,18 @@ enum OrderStatus {
   REFUNDED
 }
 
+// <-- NEW ENUMS FOR E-LEARNING -->
+enum BookingType {
+  MENTORSHIP
+  WEBINAR
+}
+
+enum QuizDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
 // -----------------------------------------------------------------------------
 // MODELS
 // -----------------------------------------------------------------------------
@@ -61,8 +74,10 @@ model User {
   phone        String?
   role         Role    @default(STUDENT)
 
-  // Student-specific fields
-  licenseNumber String?
+  // E-Learning Profile Fields
+  avatarUrl String?
+  bio       String?
+  headline  String?
 
   // Relations
   centerId           String?
@@ -97,19 +112,19 @@ model Stage {
   id          String      @id @default(cuid())
   title       String
   description String?
-  dateStart   DateTime
-  dateEnd     DateTime
-  location    String
   price       Float
-  capacity    Int
   status      StageStatus @default(DRAFT)
-  instructor  String
+
+  // E-Learning Specific Fields
+  thumbnailUrl String?
+  category     String?
+  level        String? // e.g., Beginner, Intermediate, Advanced
+  instructorId String // ID of the instructor who created it
 
   // Relations
   centerId           String
   center             Center              @relation(fields: [centerId], references: [id])
-  bookings           Booking[]
-  lessons            Lesson[]
+  modules            Module[] // Replaced 'lessons' with 'modules'
   projectSubmissions ProjectSubmission[]
   orderItems         OrderItem[]
 
@@ -117,29 +132,24 @@ model Stage {
   updatedAt DateTime @updatedAt
 }
 
-model Booking {
-  id     String        @id @default(cuid())
-  status BookingStatus @default(PENDING)
-
-  // Payment & Documents
-  stripeSessionId String? @unique
-  licenseFrontUrl String?
-  licenseBackUrl  String?
+// <-- NEW: Module Model (To group lessons) -->
+model Module {
+  id    String @id @default(cuid())
+  title String
+  order Int
 
   // Relations
-  userId  String
-  user    User   @relation(fields: [userId], references: [id])
-  stageId String
-  stage   Stage  @relation(fields: [stageId], references: [id])
+  stageId  String
+  stage    Stage          @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  lessons  Lesson[]
+  quizBank QuizQuestion[] // Quizzes belonging to this module
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([userId, stageId])
 }
 
 // -----------------------------------------------------------------------------
-// NEW E-COMMERCE MODELS (COUPONS, ORDERS, PRODUCTS)
+// E-COMMERCE MODELS (COUPONS, ORDERS, PRODUCTS)
 // -----------------------------------------------------------------------------
 
 model Coupon {
@@ -175,7 +185,6 @@ model Order {
   updatedAt DateTime @updatedAt
 }
 
-// <-- NEW: Product Model -->
 model Product {
   id          String  @id @default(cuid())
   title       String
@@ -191,7 +200,6 @@ model Product {
   updatedAt DateTime @updatedAt
 }
 
-// <-- UPDATED: OrderItem can now hold either a Stage OR a Product -->
 model OrderItem {
   id    String @id @default(cuid())
   price Float // Snapshot of the price at the exact moment of purchase
@@ -200,17 +208,17 @@ model OrderItem {
   orderId String
   order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  stageId String? // <-- Made Optional
+  stageId String?
   stage   Stage?  @relation(fields: [stageId], references: [id])
 
-  productId String? // <-- NEW: Link to the digital product
+  productId String?
   product   Product? @relation(fields: [productId], references: [id])
 
   createdAt DateTime @default(now())
 }
 
 // -----------------------------------------------------------------------------
-// E-LEARNING MODELS
+// E-LEARNING MODELS (LESSONS, PROGRESS, BOOKINGS)
 // -----------------------------------------------------------------------------
 
 model Lesson {
@@ -218,13 +226,14 @@ model Lesson {
   title       String
   description String?
   videoUrl    String?
+  duration    Int? // Duration in minutes
   order       Int
 
   // Relations
-  stageId    String
-  stage      Stage      @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  moduleId   String
+  module     Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   progresses Progress[]
-  questions  Question[]
+  questions  Question[] // Q&A Forum questions
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -262,6 +271,45 @@ model ProjectSubmission {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, stageId])
+}
+
+model Booking {
+  id     String        @id @default(cuid())
+  status BookingStatus @default(PENDING)
+
+  // 1-on-1 Mentorship / Webinar details
+  title       String
+  type        BookingType @default(MENTORSHIP)
+  date        DateTime
+  startTime   String // e.g., "14:00"
+  endTime     String // e.g., "15:00"
+  meetingLink String? // Zoom/Google Meet link
+
+  // Relations
+  userId       String
+  user         User   @relation(fields: [userId], references: [id])
+  instructorId String // ID of the instructor hosting the session
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// <-- NEW: Quiz System -->
+model QuizQuestion {
+  id            String         @id @default(cuid())
+  text          String
+  type          String // e.g., "MULTIPLE_CHOICE", "TRUE_FALSE"
+  difficulty    QuizDifficulty @default(MEDIUM)
+  options       String[] // Array of possible answers (e.g., ["A", "B", "C"])
+  correctAnswer Int // Index of the correct option
+  explanation   String?
+
+  // Relations
+  moduleId String
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // -----------------------------------------------------------------------------

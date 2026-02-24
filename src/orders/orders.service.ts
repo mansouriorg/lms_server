@@ -1,4 +1,3 @@
-// src/orders/orders.service.ts
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -18,19 +17,23 @@ export class OrdersService {
       throw new BadRequestException('Votre panier est vide.');
     }
 
-    // --- 1. PROCESS BOOTCAMPS (STAGES) ---
+    // --- 1. PROCESS COURSES (STAGES) ---
     if (dto.stageIds && dto.stageIds.length > 0) {
       const stages = await this.prisma.stage.findMany({ where: { id: { in: dto.stageIds } } });
       if (stages.length !== dto.stageIds.length) {
-        throw new NotFoundException("Un ou plusieurs bootcamps n'existent pas.");
+        throw new NotFoundException("Un ou plusieurs cours n'existent pas.");
       }
 
-      // Prevent duplicate bootcamp purchases
-      const existingBookings = await this.prisma.booking.findMany({
-        where: { userId, stageId: { in: dto.stageIds }, status: 'PAID' },
+      // PREVENT DUPLICATE COURSE PURCHASES
+      // Updated: We now check OrderItems instead of Bookings, since Bookings are for 1-on-1s now.
+      const existingCourseOrders = await this.prisma.orderItem.findMany({
+        where: { 
+          order: { userId: userId, status: 'PAID' },
+          stageId: { in: dto.stageIds } 
+        },
       });
-      if (existingBookings.length > 0) {
-        throw new BadRequestException("Vous possédez déjà un ou plusieurs bootcamps de ce panier.");
+      if (existingCourseOrders.length > 0) {
+        throw new BadRequestException("Vous possédez déjà un ou plusieurs cours de ce panier.");
       }
 
       stages.forEach(stage => {
@@ -49,13 +52,13 @@ export class OrdersService {
       }
 
       // Prevent buying the same digital download twice
-      const existingOrders = await this.prisma.orderItem.findMany({
+      const existingProductOrders = await this.prisma.orderItem.findMany({
         where: {
           order: { userId, status: 'PAID' },
           productId: { in: dto.productIds }
         }
       });
-      if (existingOrders.length > 0) {
+      if (existingProductOrders.length > 0) {
         throw new BadRequestException("Vous possédez déjà un ou plusieurs produits numériques de ce panier.");
       }
 
@@ -92,7 +95,7 @@ export class OrdersService {
       data: {
         userId: userId,
         totalAmount: totalAmount,
-        status: 'PENDING',
+        status: 'PENDING', // Will be set to PAID after Stripe/payment gateway success
         couponId: appliedCouponId,
         items: {
           create: orderItemsData, // Injects the mixed array of Stages and Products

@@ -1,7 +1,6 @@
-// src/users/users.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { PrismaService } from '../prisma/prisma.service'; // Removed .js and fixed relative path
+import { UpdateUserDto } from './dto/update-user.dto'; // Removed .js
 
 @Injectable()
 export class UsersService {
@@ -17,7 +16,7 @@ export class UsersService {
         firstName: true,
         lastName: true,
         phone: true,
-        licenseNumber: true,
+        // licenseNumber has been completely removed!
         role: true,
         createdAt: true,
       },
@@ -42,7 +41,7 @@ export class UsersService {
         firstName: true,
         lastName: true,
         phone: true,
-        licenseNumber: true,
+        // licenseNumber has been completely removed!
       },
     });
 

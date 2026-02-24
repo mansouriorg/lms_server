@@ -2,7 +2,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateStageDto } from './create-stage.dto';
 import { IsOptional, IsEnum } from 'class-validator';
-import { StageStatus } from 'generated/prisma/enums';
+import { StageStatus } from 'src/generated/prisma/enums';
 
 // PartialType copies CreateStageDto but makes every field optional!
 export class UpdateStageDto extends PartialType(CreateStageDto) {

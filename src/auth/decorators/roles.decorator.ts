@@ -1,6 +1,6 @@
 // src/auth/decorators/roles.decorator.ts
 import { SetMetadata } from '@nestjs/common';
-import { Role } from 'generated/prisma/enums';// Import the Enum directly from your Prisma schema
+import { Role } from 'src/generated/prisma/enums';
 
 export const ROLES_KEY = 'roles';
 

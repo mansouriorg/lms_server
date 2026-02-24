@@ -1,57 +1,68 @@
-// src/stages/stages.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateStageDto } from './dto/create-stage.dto';
-import { UpdateStageDto } from './dto/update-stage.dto'; // <-- Added this import
+import { UpdateStageDto } from './dto/update-stage.dto';
 
 @Injectable()
 export class StagesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // 1. Create a new Stage
+  // 1. Create a new Stage (Course)
   async create(dto: CreateStageDto) {
     const newStage = await this.prisma.stage.create({
       data: {
         title: dto.title,
         description: dto.description,
-        dateStart: new Date(dto.dateStart),
-        dateEnd: new Date(dto.dateEnd),
-        location: dto.location,
         price: dto.price,
-        capacity: dto.capacity,
-        instructor: dto.instructor,
+        thumbnailUrl: dto.thumbnailUrl,
+        category: dto.category,
+        level: dto.level,
+        instructorId: dto.instructorId,
         centerId: dto.centerId,
-        // status is automatically set to 'DRAFT' by Prisma as per your schema
+        // status is automatically set to 'DRAFT' by Prisma
       },
     });
 
     return {
-      message: 'Stage créé avec succès.',
+      message: 'Cours créé avec succès.',
       stage: newStage,
     };
   }
 
-  // 2. Fetch all Stages (useful for students browsing available courses)
+  // 2. Fetch all Stages (useful for students browsing the public catalog)
   async findAll() {
     return this.prisma.stage.findMany({
-      orderBy: { dateStart: 'asc' }, // Orders them by upcoming dates first
+      orderBy: { createdAt: 'desc' }, // Order by newest courses first
       include: {
         center: {
-          select: { name: true, location: true } // Only include safe center info
+          select: { name: true } // Identify which academy created it
+        },
+        _count: {
+          select: { modules: true, orderItems: true } // Easily show how many modules it has and how many students bought it!
         }
       }
     });
   }
 
-  // 3. Fetch a single Stage by its ID
+  // 3. Fetch a single Stage by its ID (For the Course Player)
   async findOne(id: string) {
     const stage = await this.prisma.stage.findUnique({
       where: { id },
-      include: { center: true }
+      include: { 
+        center: true,
+        modules: {
+          include: {
+            lessons: {
+              orderBy: { order: 'asc' } // Ensure lessons are in the right order
+            }
+          },
+          orderBy: { order: 'asc' } // Ensure modules are in the right order
+        }
+      }
     });
 
     if (!stage) {
-      throw new NotFoundException('Stage introuvable.');
+      throw new NotFoundException('Cours introuvable.');
     }
 
     return stage;
@@ -59,40 +70,34 @@ export class StagesService {
 
   // 4. Update an existing Stage
   async update(id: string, dto: UpdateStageDto) {
-    // Check if it exists first
     const stage = await this.prisma.stage.findUnique({ where: { id } });
     if (!stage) {
-      throw new NotFoundException('Stage introuvable.');
+      throw new NotFoundException('Cours introuvable.');
     }
 
-    // Convert date strings to Date objects if they were provided in the update
-    const dataToUpdate: any = { ...dto };
-    if (dto.dateStart) dataToUpdate.dateStart = new Date(dto.dateStart);
-    if (dto.dateEnd) dataToUpdate.dateEnd = new Date(dto.dateEnd);
-
+    // We no longer need date conversions, so we just pass the DTO directly
     const updatedStage = await this.prisma.stage.update({
       where: { id },
-      data: dataToUpdate,
+      data: dto,
     });
 
     return {
-      message: 'Stage mis à jour avec succès.',
+      message: 'Cours mis à jour avec succès.',
       stage: updatedStage,
     };
   }
 
   // 5. Delete a Stage
   async remove(id: string) {
-    // Check if it exists first
     const stage = await this.prisma.stage.findUnique({ where: { id } });
     if (!stage) {
-      throw new NotFoundException('Stage introuvable.');
+      throw new NotFoundException('Cours introuvable.');
     }
 
     await this.prisma.stage.delete({
       where: { id },
     });
 
-    return { message: 'Stage supprimé avec succès.' };
+    return { message: 'Cours supprimé avec succès.' };
   }
 }

@@ -13,7 +13,7 @@ import { CreateCouponDto } from './dto/create-coupon.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { Role } from 'generated/prisma/enums';
+import { Role } from 'src/generated/prisma/enums';
 
 @Controller('coupons')
 @UseGuards(JwtAuthGuard, RolesGuard) // Secures the entire controller

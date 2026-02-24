@@ -1,4 +1,3 @@
-// src/project-submissions/project-submissions.service.ts
 import { 
   Injectable, 
   NotFoundException, 
@@ -8,7 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 import { GradeSubmissionDto } from './dto/grade-submission.dto';
-import { SubmissionStatus } from 'generated/prisma/enums';
+import { SubmissionStatus } from 'src/generated/prisma/enums';
 
 @Injectable()
 export class ProjectSubmissionsService {
@@ -17,15 +16,20 @@ export class ProjectSubmissionsService {
   // --- STUDENT METHODS ---
 
   async submitProject(userId: string, dto: CreateSubmissionDto) {
-    // 1. Verify the user is actually enrolled in this bootcamp
-    const enrollment = await this.prisma.booking.findUnique({
+    // 1. Verify the user actually bought this course
+    // We now check OrderItems instead of Bookings!
+    const enrollment = await this.prisma.orderItem.findFirst({
       where: {
-        userId_stageId: { userId: userId, stageId: dto.stageId },
+        stageId: dto.stageId,
+        order: {
+          userId: userId,
+          status: 'PAID', // Ensures the payment actually went through
+        },
       },
     });
 
     if (!enrollment) {
-      throw new ForbiddenException("Vous n'êtes pas inscrit à ce bootcamp.");
+      throw new ForbiddenException("Vous n'avez pas acheté ce cours.");
     }
 
     // 2. Check if a submission already exists
@@ -78,13 +82,13 @@ export class ProjectSubmissionsService {
     });
 
     if (!submission) {
-      throw new NotFoundException("Aucune soumission trouvée pour ce bootcamp.");
+      throw new NotFoundException("Aucune soumission trouvée pour ce cours.");
     }
 
     return submission;
   }
 
-  // --- ADMIN / MENTOR METHODS ---
+  // --- ADMIN / INSTRUCTOR METHODS ---
 
   async findAllPending() {
     return this.prisma.projectSubmission.findMany({
@@ -93,7 +97,7 @@ export class ProjectSubmissionsService {
         user: { select: { firstName: true, lastName: true, email: true } },
         stage: { select: { title: true } },
       },
-      orderBy: { createdAt: 'asc' }, // Oldest first to help mentors clear the queue fairly
+      orderBy: { createdAt: 'asc' }, // Oldest first to help instructors clear the queue fairly
     });
   }
 

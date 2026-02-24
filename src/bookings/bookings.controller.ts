@@ -1,35 +1,31 @@
-// src/bookings/bookings.controller.ts
 import { 
   Controller, 
   Post, 
   Get, 
-  Patch, // <-- Added for updating status
+  Patch, 
   Param, 
   Body, 
-  UseGuards, 
-  UseInterceptors, 
-  UploadedFiles 
+  UseGuards 
 } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingStatusDto } from './dto/update-booking.dto'; // <-- Added
+import { UpdateBookingStatusDto } from './dto/update-booking.dto'; 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard'; // <-- Added
-import { Roles } from '../auth/decorators/roles.decorator'; // <-- Added
+import { RolesGuard } from '../auth/guards/roles.guard'; 
+import { Roles } from '../auth/decorators/roles.decorator'; 
 import { GetUser } from '../auth/decorators/get-user.decorator';
-import { Role } from 'generated/prisma/enums'; // <-- Added from your generated Enums
+import { Role } from 'src/generated/prisma/enums'; // Assuming standard Prisma generation
 
 @Controller('bookings')
-@UseGuards(JwtAuthGuard) // Requires a valid JWT token for all routes
+@UseGuards(JwtAuthGuard) // Requires a valid JWT token for all routes in this controller
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
+  // --- STUDENT ROUTES ---
+
   @Post()
   create(
-    @GetUser('id') userId: string, // Extracted directly from the token!
+    @GetUser('id') userId: string, // Extracted directly from the JWT token
     @Body() createBookingDto: CreateBookingDto
   ) {
     return this.bookingsService.create(userId, createBookingDto);
@@ -40,38 +36,18 @@ export class BookingsController {
     return this.bookingsService.getUserBookings(userId);
   }
 
-  // --- Document Upload Endpoint ---
-  @Post(':id/documents')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'front', maxCount: 1 },
-      { name: 'back', maxCount: 1 },
-    ], {
-      // Configure where and how to save the files locally
-      storage: diskStorage({
-        destination: './uploads', // Saves to the 'uploads' folder in your root directory
-        filename: (req, file, callback) => {
-          // Generate a random unique name for the file to prevent overwriting
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          callback(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-        },
-      }),
-    })
-  )
-  uploadDocuments(
-    @GetUser('id') userId: string,
-    @Param('id') bookingId: string,
-    @UploadedFiles() files: { front?: Express.Multer.File[], back?: Express.Multer.File[] }
-  ) {
-    return this.bookingsService.uploadDocuments(userId, bookingId, files);
+  // --- INSTRUCTOR / ADMIN ROUTES ---
+
+  @Get('instructor/my-sessions')
+  @UseGuards(RolesGuard)
+  @Roles(Role.CENTER_ADMIN, Role.SUPER_ADMIN) // CENTER_ADMIN acts as the Instructor role
+  getInstructorBookings(@GetUser('id') instructorId: string) {
+    return this.bookingsService.getInstructorBookings(instructorId);
   }
 
-  // --- NEW: ADMIN ONLY ROUTES ---
-
   @Get('admin/all')
-  @UseGuards(RolesGuard) // 1. Trigger the roles check
-  @Roles(Role.CENTER_ADMIN, Role.SUPER_ADMIN) // 2. Restrict to admins
+  @UseGuards(RolesGuard)
+  @Roles(Role.SUPER_ADMIN) // Restrict platform-wide view to super admins only
   findAllForAdmin() {
     return this.bookingsService.findAllForAdmin();
   }
@@ -83,6 +59,7 @@ export class BookingsController {
     @Param('id') bookingId: string,
     @Body() dto: UpdateBookingStatusDto
   ) {
-    return this.bookingsService.updateStatus(bookingId, dto.status);
+    // Passes the status and the optional meeting link to the service
+    return this.bookingsService.updateStatus(bookingId, dto.status, dto.meetingLink);
   }
 }

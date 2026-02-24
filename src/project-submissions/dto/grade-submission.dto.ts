@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator';
-import { SubmissionStatus } from 'generated/prisma/enums'; 
+import { SubmissionStatus } from 'src/generated/prisma/enums'; 
 
 export class GradeSubmissionDto {
   @IsEnum(SubmissionStatus, { message: 'Statut invalide.' })
