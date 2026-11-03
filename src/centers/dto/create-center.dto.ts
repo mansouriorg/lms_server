@@ -1,24 +1,27 @@
+// src/centers/dto/create-center.dto.ts
 import { IsString, IsEmail, IsNotEmpty } from 'class-validator';
 import { Transform } from 'class-transformer';
-import sanitizeHtml from 'sanitize-html';
+import { emailText, withoutHtml } from '../../common/text';
 
+// The academy form. Name, city and phone: no HTML, "&" kept, so "R&D
+// Academy" is stored and shown as typed (see common/text.ts).
 export class CreateCenterDto {
   @IsString()
   @IsNotEmpty()
-  @Transform(({ value }) => sanitizeHtml(value?.trim()))
+  @Transform(withoutHtml)
   name: string;
 
   @IsString()
   @IsNotEmpty()
-  @Transform(({ value }) => sanitizeHtml(value?.trim()))
+  @Transform(withoutHtml)
   location: string;
 
-  @IsEmail({}, { message: 'Veuillez fournir un email valide.' })
-  @Transform(({ value }) => value?.trim().toLowerCase())
+  @IsEmail({}, { message: 'Please enter a valid email address.' })
+  @Transform(emailText)
   contactEmail: string;
 
   @IsString()
   @IsNotEmpty()
-  @Transform(({ value }) => sanitizeHtml(value?.trim()))
+  @Transform(withoutHtml)
   contactPhone: string;
 }

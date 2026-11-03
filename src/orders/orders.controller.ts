@@ -7,11 +7,13 @@ import {
   UseGuards 
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
+import { Param, Patch } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { GetUser } from '../auth/decorators/get-user.decorator';
+import type { Actor } from '../common/academy-scope';
 import { Role } from 'src/generated/prisma/enums';
 
 @Controller('orders')
@@ -39,7 +41,15 @@ export class OrdersController {
   @Get('admin/all')
   @UseGuards(RolesGuard) // Enforces role-based access
   @Roles(Role.CENTER_ADMIN, Role.SUPER_ADMIN)
-  getAllOrders() {
-    return this.ordersService.getAllOrders();
+  getAllOrders(@GetUser() user: Actor) {
+    return this.ordersService.getAllOrders(user);
+  }
+
+  // An admin confirms a cash or bank transfer payment (see markPaid)
+  @Patch(':id/mark-paid')
+  @UseGuards(RolesGuard)
+  @Roles(Role.CENTER_ADMIN, Role.SUPER_ADMIN)
+  markPaid(@Param('id') id: string, @GetUser() user: Actor) {
+    return this.ordersService.markPaid(id, user);
   }
 }

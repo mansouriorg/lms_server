@@ -8,7 +8,8 @@ describe('UsersController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [UsersService],
+      // The controller only passes requests to the service, so a stub is enough.
+      providers: [{ provide: UsersService, useValue: {} }],
     }).compile();
 
     controller = module.get<UsersController>(UsersController);

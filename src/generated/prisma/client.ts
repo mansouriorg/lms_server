@@ -43,6 +43,11 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model PasswordReset
+ * 
+ */
+export type PasswordReset = Prisma.PasswordResetModel
+/**
  * Model Center
  * 
  */
@@ -102,6 +107,11 @@ export type Booking = Prisma.BookingModel
  * 
  */
 export type QuizQuestion = Prisma.QuizQuestionModel
+/**
+ * Model QuizAttempt
+ * 
+ */
+export type QuizAttempt = Prisma.QuizAttemptModel
 /**
  * Model Question
  * 

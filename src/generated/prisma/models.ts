@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/PasswordReset'
 export type * from './models/Center'
 export type * from './models/Stage'
 export type * from './models/Module'
@@ -21,6 +22,7 @@ export type * from './models/Progress'
 export type * from './models/ProjectSubmission'
 export type * from './models/Booking'
 export type * from './models/QuizQuestion'
+export type * from './models/QuizAttempt'
 export type * from './models/Question'
 export type * from './models/Reply'
 export type * from './commonInputTypes'

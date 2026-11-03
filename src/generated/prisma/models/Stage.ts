@@ -44,6 +44,7 @@ export type StageMinAggregateOutputType = {
   category: string | null
   level: string | null
   instructorId: string | null
+  projectBrief: string | null
   centerId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -59,6 +60,7 @@ export type StageMaxAggregateOutputType = {
   category: string | null
   level: string | null
   instructorId: string | null
+  projectBrief: string | null
   centerId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -74,6 +76,7 @@ export type StageCountAggregateOutputType = {
   category: number
   level: number
   instructorId: number
+  projectBrief: number
   centerId: number
   createdAt: number
   updatedAt: number
@@ -99,6 +102,7 @@ export type StageMinAggregateInputType = {
   category?: true
   level?: true
   instructorId?: true
+  projectBrief?: true
   centerId?: true
   createdAt?: true
   updatedAt?: true
@@ -114,6 +118,7 @@ export type StageMaxAggregateInputType = {
   category?: true
   level?: true
   instructorId?: true
+  projectBrief?: true
   centerId?: true
   createdAt?: true
   updatedAt?: true
@@ -129,6 +134,7 @@ export type StageCountAggregateInputType = {
   category?: true
   level?: true
   instructorId?: true
+  projectBrief?: true
   centerId?: true
   createdAt?: true
   updatedAt?: true
@@ -231,6 +237,7 @@ export type StageGroupByOutputType = {
   category: string | null
   level: string | null
   instructorId: string
+  projectBrief: string | null
   centerId: string
   createdAt: Date
   updatedAt: Date
@@ -269,6 +276,7 @@ export type StageWhereInput = {
   category?: Prisma.StringNullableFilter<"Stage"> | string | null
   level?: Prisma.StringNullableFilter<"Stage"> | string | null
   instructorId?: Prisma.StringFilter<"Stage"> | string
+  projectBrief?: Prisma.StringNullableFilter<"Stage"> | string | null
   centerId?: Prisma.StringFilter<"Stage"> | string
   createdAt?: Prisma.DateTimeFilter<"Stage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Stage"> | Date | string
@@ -288,6 +296,7 @@ export type StageOrderByWithRelationInput = {
   category?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrderInput | Prisma.SortOrder
   instructorId?: Prisma.SortOrder
+  projectBrief?: Prisma.SortOrderInput | Prisma.SortOrder
   centerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -310,6 +319,7 @@ export type StageWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.StringNullableFilter<"Stage"> | string | null
   level?: Prisma.StringNullableFilter<"Stage"> | string | null
   instructorId?: Prisma.StringFilter<"Stage"> | string
+  projectBrief?: Prisma.StringNullableFilter<"Stage"> | string | null
   centerId?: Prisma.StringFilter<"Stage"> | string
   createdAt?: Prisma.DateTimeFilter<"Stage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Stage"> | Date | string
@@ -329,6 +339,7 @@ export type StageOrderByWithAggregationInput = {
   category?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrderInput | Prisma.SortOrder
   instructorId?: Prisma.SortOrder
+  projectBrief?: Prisma.SortOrderInput | Prisma.SortOrder
   centerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -352,6 +363,7 @@ export type StageScalarWhereWithAggregatesInput = {
   category?: Prisma.StringNullableWithAggregatesFilter<"Stage"> | string | null
   level?: Prisma.StringNullableWithAggregatesFilter<"Stage"> | string | null
   instructorId?: Prisma.StringWithAggregatesFilter<"Stage"> | string
+  projectBrief?: Prisma.StringNullableWithAggregatesFilter<"Stage"> | string | null
   centerId?: Prisma.StringWithAggregatesFilter<"Stage"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Stage"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Stage"> | Date | string
@@ -367,6 +379,7 @@ export type StageCreateInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   center: Prisma.CenterCreateNestedOneWithoutStagesInput
@@ -385,6 +398,7 @@ export type StageUncheckedCreateInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   centerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -403,6 +417,7 @@ export type StageUpdateInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   center?: Prisma.CenterUpdateOneRequiredWithoutStagesNestedInput
@@ -421,6 +436,7 @@ export type StageUncheckedUpdateInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   centerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -439,6 +455,7 @@ export type StageCreateManyInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   centerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -454,6 +471,7 @@ export type StageUpdateManyMutationInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -468,6 +486,7 @@ export type StageUncheckedUpdateManyInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   centerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -493,6 +512,7 @@ export type StageCountOrderByAggregateInput = {
   category?: Prisma.SortOrder
   level?: Prisma.SortOrder
   instructorId?: Prisma.SortOrder
+  projectBrief?: Prisma.SortOrder
   centerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -512,6 +532,7 @@ export type StageMaxOrderByAggregateInput = {
   category?: Prisma.SortOrder
   level?: Prisma.SortOrder
   instructorId?: Prisma.SortOrder
+  projectBrief?: Prisma.SortOrder
   centerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -527,6 +548,7 @@ export type StageMinOrderByAggregateInput = {
   category?: Prisma.SortOrder
   level?: Prisma.SortOrder
   instructorId?: Prisma.SortOrder
+  projectBrief?: Prisma.SortOrder
   centerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -654,6 +676,7 @@ export type StageCreateWithoutCenterInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   modules?: Prisma.ModuleCreateNestedManyWithoutStageInput
@@ -671,6 +694,7 @@ export type StageUncheckedCreateWithoutCenterInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   modules?: Prisma.ModuleUncheckedCreateNestedManyWithoutStageInput
@@ -717,6 +741,7 @@ export type StageScalarWhereInput = {
   category?: Prisma.StringNullableFilter<"Stage"> | string | null
   level?: Prisma.StringNullableFilter<"Stage"> | string | null
   instructorId?: Prisma.StringFilter<"Stage"> | string
+  projectBrief?: Prisma.StringNullableFilter<"Stage"> | string | null
   centerId?: Prisma.StringFilter<"Stage"> | string
   createdAt?: Prisma.DateTimeFilter<"Stage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Stage"> | Date | string
@@ -732,6 +757,7 @@ export type StageCreateWithoutModulesInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   center: Prisma.CenterCreateNestedOneWithoutStagesInput
@@ -749,6 +775,7 @@ export type StageUncheckedCreateWithoutModulesInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   centerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -782,6 +809,7 @@ export type StageUpdateWithoutModulesInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   center?: Prisma.CenterUpdateOneRequiredWithoutStagesNestedInput
@@ -799,6 +827,7 @@ export type StageUncheckedUpdateWithoutModulesInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   centerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -816,6 +845,7 @@ export type StageCreateWithoutOrderItemsInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   center: Prisma.CenterCreateNestedOneWithoutStagesInput
@@ -833,6 +863,7 @@ export type StageUncheckedCreateWithoutOrderItemsInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   centerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -866,6 +897,7 @@ export type StageUpdateWithoutOrderItemsInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   center?: Prisma.CenterUpdateOneRequiredWithoutStagesNestedInput
@@ -883,6 +915,7 @@ export type StageUncheckedUpdateWithoutOrderItemsInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   centerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -900,6 +933,7 @@ export type StageCreateWithoutProjectSubmissionsInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   center: Prisma.CenterCreateNestedOneWithoutStagesInput
@@ -917,6 +951,7 @@ export type StageUncheckedCreateWithoutProjectSubmissionsInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   centerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -950,6 +985,7 @@ export type StageUpdateWithoutProjectSubmissionsInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   center?: Prisma.CenterUpdateOneRequiredWithoutStagesNestedInput
@@ -967,6 +1003,7 @@ export type StageUncheckedUpdateWithoutProjectSubmissionsInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   centerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -984,6 +1021,7 @@ export type StageCreateManyCenterInput = {
   category?: string | null
   level?: string | null
   instructorId: string
+  projectBrief?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -998,6 +1036,7 @@ export type StageUpdateWithoutCenterInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modules?: Prisma.ModuleUpdateManyWithoutStageNestedInput
@@ -1015,6 +1054,7 @@ export type StageUncheckedUpdateWithoutCenterInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modules?: Prisma.ModuleUncheckedUpdateManyWithoutStageNestedInput
@@ -1032,6 +1072,7 @@ export type StageUncheckedUpdateManyWithoutCenterInput = {
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instructorId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectBrief?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1095,6 +1136,7 @@ export type StageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   category?: boolean
   level?: boolean
   instructorId?: boolean
+  projectBrief?: boolean
   centerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1115,6 +1157,7 @@ export type StageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   category?: boolean
   level?: boolean
   instructorId?: boolean
+  projectBrief?: boolean
   centerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1131,6 +1174,7 @@ export type StageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   category?: boolean
   level?: boolean
   instructorId?: boolean
+  projectBrief?: boolean
   centerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1147,12 +1191,13 @@ export type StageSelectScalar = {
   category?: boolean
   level?: boolean
   instructorId?: boolean
+  projectBrief?: boolean
   centerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type StageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "price" | "status" | "thumbnailUrl" | "category" | "level" | "instructorId" | "centerId" | "createdAt" | "updatedAt", ExtArgs["result"]["stage"]>
+export type StageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "price" | "status" | "thumbnailUrl" | "category" | "level" | "instructorId" | "projectBrief" | "centerId" | "createdAt" | "updatedAt", ExtArgs["result"]["stage"]>
 export type StageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   center?: boolean | Prisma.CenterDefaultArgs<ExtArgs>
   modules?: boolean | Prisma.Stage$modulesArgs<ExtArgs>
@@ -1185,6 +1230,7 @@ export type $StagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     category: string | null
     level: string | null
     instructorId: string
+    projectBrief: string | null
     centerId: string
     createdAt: Date
     updatedAt: Date
@@ -1624,6 +1670,7 @@ export interface StageFieldRefs {
   readonly category: Prisma.FieldRef<"Stage", 'String'>
   readonly level: Prisma.FieldRef<"Stage", 'String'>
   readonly instructorId: Prisma.FieldRef<"Stage", 'String'>
+  readonly projectBrief: Prisma.FieldRef<"Stage", 'String'>
   readonly centerId: Prisma.FieldRef<"Stage", 'String'>
   readonly createdAt: Prisma.FieldRef<"Stage", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Stage", 'DateTime'>

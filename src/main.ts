@@ -7,6 +7,8 @@ import { ConfigService } from '@nestjs/config'; // <-- Added ConfigService
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { join } from 'path';
+import { apiDocsEnabled } from './config/api-docs';
+import { applyCors } from './config/cors';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter'; 
 
 async function bootstrap() {
@@ -15,21 +17,9 @@ async function bootstrap() {
   // Safely grab the ConfigService
   const configService = app.get(ConfigService);
 
-  // 1. Strict CORS using ConfigService
-  const frontendUrls = configService.get<string>('FRONTEND_URLS');
-  const allowedOrigins = frontendUrls ? frontendUrls.split(',') : ['http://localhost:3000'];
-  
-  app.enableCors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Blocked by CORS policy'));
-      }
-    },
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+  // 1. CORS: only the web app sites listed in FRONTEND_URLS may call the API
+  // from a browser; a page from another site gets a 403 (src/config/cors.ts)
+  applyCors(app, configService.get<string>('FRONTEND_URLS'));
 
   // 2. Helmet Security
   app.use(helmet({ 
@@ -53,21 +43,27 @@ async function bootstrap() {
     prefix: '/uploads/',
   });
 
-  // 6. Swagger Configuration (UPDATED TITLE)
-  const config = new DocumentBuilder()
-    .setTitle('E-Learning Academy API') // <-- Updated!
-    .setDescription('Official API documentation for the E-Learning platform') // <-- Updated!
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-    
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); 
+  // 6. API documentation (Swagger, at /api): on in development and test, off
+  // in production unless API_DOCS=on (src/config/api-docs.ts)
+  const docs = apiDocsEnabled(
+    configService.get<string>('NODE_ENV'),
+    configService.get<string>('API_DOCS'),
+  );
+  if (docs) {
+    const config = new DocumentBuilder()
+      .setTitle('LMS Academy API')
+      .setDescription('API documentation of the LMS Academy platform')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+  }
 
   // 7. Start the Server using ConfigService
   const port = configService.get<number>('PORT') || 3001;
   await app.listen(port);
   console.log(`🚀 Backend successfully running on: http://localhost:${port}`);
-  console.log(`📚 Swagger Docs available at: http://localhost:${port}/api`);
+  if (docs) console.log(`📚 Swagger Docs available at: http://localhost:${port}/api`);
 }
 bootstrap();

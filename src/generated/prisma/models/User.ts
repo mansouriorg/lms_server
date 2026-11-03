@@ -20,8 +20,18 @@ export type UserModel = runtime.Types.Result.DefaultSelection<Prisma.$UserPayloa
 
 export type AggregateUser = {
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
+}
+
+export type UserAvgAggregateOutputType = {
+  tokenVersion: number | null
+}
+
+export type UserSumAggregateOutputType = {
+  tokenVersion: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -32,6 +42,9 @@ export type UserMinAggregateOutputType = {
   lastName: string | null
   phone: string | null
   role: $Enums.Role | null
+  termsAcceptedAt: Date | null
+  termsVersion: string | null
+  tokenVersion: number | null
   avatarUrl: string | null
   bio: string | null
   headline: string | null
@@ -48,6 +61,9 @@ export type UserMaxAggregateOutputType = {
   lastName: string | null
   phone: string | null
   role: $Enums.Role | null
+  termsAcceptedAt: Date | null
+  termsVersion: string | null
+  tokenVersion: number | null
   avatarUrl: string | null
   bio: string | null
   headline: string | null
@@ -64,6 +80,9 @@ export type UserCountAggregateOutputType = {
   lastName: number
   phone: number
   role: number
+  termsAcceptedAt: number
+  termsVersion: number
+  tokenVersion: number
   avatarUrl: number
   bio: number
   headline: number
@@ -74,6 +93,14 @@ export type UserCountAggregateOutputType = {
 }
 
 
+export type UserAvgAggregateInputType = {
+  tokenVersion?: true
+}
+
+export type UserSumAggregateInputType = {
+  tokenVersion?: true
+}
+
 export type UserMinAggregateInputType = {
   id?: true
   email?: true
@@ -82,6 +109,9 @@ export type UserMinAggregateInputType = {
   lastName?: true
   phone?: true
   role?: true
+  termsAcceptedAt?: true
+  termsVersion?: true
+  tokenVersion?: true
   avatarUrl?: true
   bio?: true
   headline?: true
@@ -98,6 +128,9 @@ export type UserMaxAggregateInputType = {
   lastName?: true
   phone?: true
   role?: true
+  termsAcceptedAt?: true
+  termsVersion?: true
+  tokenVersion?: true
   avatarUrl?: true
   bio?: true
   headline?: true
@@ -114,6 +147,9 @@ export type UserCountAggregateInputType = {
   lastName?: true
   phone?: true
   role?: true
+  termsAcceptedAt?: true
+  termsVersion?: true
+  tokenVersion?: true
   avatarUrl?: true
   bio?: true
   headline?: true
@@ -161,6 +197,18 @@ export type UserAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: UserAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: UserSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: UserMinAggregateInputType
@@ -191,6 +239,8 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: UserCountAggregateInputType | true
+  _avg?: UserAvgAggregateInputType
+  _sum?: UserSumAggregateInputType
   _min?: UserMinAggregateInputType
   _max?: UserMaxAggregateInputType
 }
@@ -203,6 +253,9 @@ export type UserGroupByOutputType = {
   lastName: string
   phone: string | null
   role: $Enums.Role
+  termsAcceptedAt: Date | null
+  termsVersion: string | null
+  tokenVersion: number
   avatarUrl: string | null
   bio: string | null
   headline: string | null
@@ -210,6 +263,8 @@ export type UserGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
 }
@@ -240,6 +295,9 @@ export type UserWhereInput = {
   lastName?: Prisma.StringFilter<"User"> | string
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  termsAcceptedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  termsVersion?: Prisma.StringNullableFilter<"User"> | string | null
+  tokenVersion?: Prisma.IntFilter<"User"> | number
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   bio?: Prisma.StringNullableFilter<"User"> | string | null
   headline?: Prisma.StringNullableFilter<"User"> | string | null
@@ -253,6 +311,8 @@ export type UserWhereInput = {
   questions?: Prisma.QuestionListRelationFilter
   replies?: Prisma.ReplyListRelationFilter
   orders?: Prisma.OrderListRelationFilter
+  quizAttempts?: Prisma.QuizAttemptListRelationFilter
+  passwordResets?: Prisma.PasswordResetListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -263,6 +323,9 @@ export type UserOrderByWithRelationInput = {
   lastName?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
+  termsAcceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  termsVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  tokenVersion?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   headline?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -276,6 +339,8 @@ export type UserOrderByWithRelationInput = {
   questions?: Prisma.QuestionOrderByRelationAggregateInput
   replies?: Prisma.ReplyOrderByRelationAggregateInput
   orders?: Prisma.OrderOrderByRelationAggregateInput
+  quizAttempts?: Prisma.QuizAttemptOrderByRelationAggregateInput
+  passwordResets?: Prisma.PasswordResetOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -289,6 +354,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   lastName?: Prisma.StringFilter<"User"> | string
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  termsAcceptedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  termsVersion?: Prisma.StringNullableFilter<"User"> | string | null
+  tokenVersion?: Prisma.IntFilter<"User"> | number
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   bio?: Prisma.StringNullableFilter<"User"> | string | null
   headline?: Prisma.StringNullableFilter<"User"> | string | null
@@ -302,6 +370,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   questions?: Prisma.QuestionListRelationFilter
   replies?: Prisma.ReplyListRelationFilter
   orders?: Prisma.OrderListRelationFilter
+  quizAttempts?: Prisma.QuizAttemptListRelationFilter
+  passwordResets?: Prisma.PasswordResetListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -312,6 +382,9 @@ export type UserOrderByWithAggregationInput = {
   lastName?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
+  termsAcceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  termsVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  tokenVersion?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   headline?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -319,8 +392,10 @@ export type UserOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
+  _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
+  _sum?: Prisma.UserSumOrderByAggregateInput
 }
 
 export type UserScalarWhereWithAggregatesInput = {
@@ -334,6 +409,9 @@ export type UserScalarWhereWithAggregatesInput = {
   lastName?: Prisma.StringWithAggregatesFilter<"User"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
+  termsAcceptedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  termsVersion?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  tokenVersion?: Prisma.IntWithAggregatesFilter<"User"> | number
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   bio?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   headline?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
@@ -350,6 +428,9 @@ export type UserCreateInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -362,6 +443,8 @@ export type UserCreateInput = {
   questions?: Prisma.QuestionCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -372,6 +455,9 @@ export type UserUncheckedCreateInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -384,6 +470,8 @@ export type UserUncheckedCreateInput = {
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -394,6 +482,9 @@ export type UserUpdateInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -406,6 +497,8 @@ export type UserUpdateInput = {
   questions?: Prisma.QuestionUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -416,6 +509,9 @@ export type UserUncheckedUpdateInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -428,6 +524,8 @@ export type UserUncheckedUpdateInput = {
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -438,6 +536,9 @@ export type UserCreateManyInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -454,6 +555,9 @@ export type UserUpdateManyMutationInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -469,6 +573,9 @@ export type UserUncheckedUpdateManyInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -485,12 +592,19 @@ export type UserCountOrderByAggregateInput = {
   lastName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  termsAcceptedAt?: Prisma.SortOrder
+  termsVersion?: Prisma.SortOrder
+  tokenVersion?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   headline?: Prisma.SortOrder
   centerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type UserAvgOrderByAggregateInput = {
+  tokenVersion?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -501,6 +615,9 @@ export type UserMaxOrderByAggregateInput = {
   lastName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  termsAcceptedAt?: Prisma.SortOrder
+  termsVersion?: Prisma.SortOrder
+  tokenVersion?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   headline?: Prisma.SortOrder
@@ -517,12 +634,24 @@ export type UserMinOrderByAggregateInput = {
   lastName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  termsAcceptedAt?: Prisma.SortOrder
+  termsVersion?: Prisma.SortOrder
+  tokenVersion?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   headline?: Prisma.SortOrder
   centerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type UserSumOrderByAggregateInput = {
+  tokenVersion?: Prisma.SortOrder
+}
+
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
 }
 
 export type UserListRelationFilter = {
@@ -533,11 +662,6 @@ export type UserListRelationFilter = {
 
 export type UserOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
-}
-
-export type UserScalarRelationFilter = {
-  is?: Prisma.UserWhereInput
-  isNot?: Prisma.UserWhereInput
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -552,8 +676,34 @@ export type EnumRoleFieldUpdateOperationsInput = {
   set?: $Enums.Role
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type UserCreateNestedOneWithoutPasswordResetsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPasswordResetsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPasswordResetsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPasswordResetsInput
+  upsert?: Prisma.UserUpsertWithoutPasswordResetsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPasswordResetsInput, Prisma.UserUpdateWithoutPasswordResetsInput>, Prisma.UserUncheckedUpdateWithoutPasswordResetsInput>
 }
 
 export type UserCreateNestedManyWithoutCenterInput = {
@@ -654,6 +804,20 @@ export type UserUpdateOneRequiredWithoutBookingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBookingsInput, Prisma.UserUpdateWithoutBookingsInput>, Prisma.UserUncheckedUpdateWithoutBookingsInput>
 }
 
+export type UserCreateNestedOneWithoutQuizAttemptsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutQuizAttemptsInput, Prisma.UserUncheckedCreateWithoutQuizAttemptsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutQuizAttemptsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutQuizAttemptsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutQuizAttemptsInput, Prisma.UserUncheckedCreateWithoutQuizAttemptsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutQuizAttemptsInput
+  upsert?: Prisma.UserUpsertWithoutQuizAttemptsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutQuizAttemptsInput, Prisma.UserUpdateWithoutQuizAttemptsInput>, Prisma.UserUncheckedUpdateWithoutQuizAttemptsInput>
+}
+
 export type UserCreateNestedOneWithoutQuestionsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutQuestionsInput, Prisma.UserUncheckedCreateWithoutQuestionsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutQuestionsInput
@@ -682,6 +846,126 @@ export type UserUpdateOneRequiredWithoutRepliesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRepliesInput, Prisma.UserUpdateWithoutRepliesInput>, Prisma.UserUncheckedUpdateWithoutRepliesInput>
 }
 
+export type UserCreateWithoutPasswordResetsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
+  avatarUrl?: string | null
+  bio?: string | null
+  headline?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  center?: Prisma.CenterCreateNestedOneWithoutAdminsInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  progresses?: Prisma.ProgressCreateNestedManyWithoutUserInput
+  projectSubmissions?: Prisma.ProjectSubmissionCreateNestedManyWithoutUserInput
+  questions?: Prisma.QuestionCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPasswordResetsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
+  avatarUrl?: string | null
+  bio?: string | null
+  headline?: string | null
+  centerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  progresses?: Prisma.ProgressUncheckedCreateNestedManyWithoutUserInput
+  projectSubmissions?: Prisma.ProjectSubmissionUncheckedCreateNestedManyWithoutUserInput
+  questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPasswordResetsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
+}
+
+export type UserUpsertWithoutPasswordResetsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPasswordResetsInput, Prisma.UserUncheckedUpdateWithoutPasswordResetsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPasswordResetsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPasswordResetsInput, Prisma.UserUncheckedUpdateWithoutPasswordResetsInput>
+}
+
+export type UserUpdateWithoutPasswordResetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  center?: Prisma.CenterUpdateOneWithoutAdminsNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  progresses?: Prisma.ProgressUpdateManyWithoutUserNestedInput
+  projectSubmissions?: Prisma.ProjectSubmissionUpdateManyWithoutUserNestedInput
+  questions?: Prisma.QuestionUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPasswordResetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  centerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  progresses?: Prisma.ProgressUncheckedUpdateManyWithoutUserNestedInput
+  projectSubmissions?: Prisma.ProjectSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  questions?: Prisma.QuestionUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutCenterInput = {
   id?: string
   email: string
@@ -690,6 +974,9 @@ export type UserCreateWithoutCenterInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -701,6 +988,8 @@ export type UserCreateWithoutCenterInput = {
   questions?: Prisma.QuestionCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCenterInput = {
@@ -711,6 +1000,9 @@ export type UserUncheckedCreateWithoutCenterInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -722,6 +1014,8 @@ export type UserUncheckedCreateWithoutCenterInput = {
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCenterInput = {
@@ -761,6 +1055,9 @@ export type UserScalarWhereInput = {
   lastName?: Prisma.StringFilter<"User"> | string
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  termsAcceptedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  termsVersion?: Prisma.StringNullableFilter<"User"> | string | null
+  tokenVersion?: Prisma.IntFilter<"User"> | number
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   bio?: Prisma.StringNullableFilter<"User"> | string | null
   headline?: Prisma.StringNullableFilter<"User"> | string | null
@@ -777,6 +1074,9 @@ export type UserCreateWithoutOrdersInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -788,6 +1088,8 @@ export type UserCreateWithoutOrdersInput = {
   projectSubmissions?: Prisma.ProjectSubmissionCreateNestedManyWithoutUserInput
   questions?: Prisma.QuestionCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOrdersInput = {
@@ -798,6 +1100,9 @@ export type UserUncheckedCreateWithoutOrdersInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -809,6 +1114,8 @@ export type UserUncheckedCreateWithoutOrdersInput = {
   projectSubmissions?: Prisma.ProjectSubmissionUncheckedCreateNestedManyWithoutUserInput
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOrdersInput = {
@@ -835,6 +1142,9 @@ export type UserUpdateWithoutOrdersInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -846,6 +1156,8 @@ export type UserUpdateWithoutOrdersInput = {
   projectSubmissions?: Prisma.ProjectSubmissionUpdateManyWithoutUserNestedInput
   questions?: Prisma.QuestionUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOrdersInput = {
@@ -856,6 +1168,9 @@ export type UserUncheckedUpdateWithoutOrdersInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -867,6 +1182,8 @@ export type UserUncheckedUpdateWithoutOrdersInput = {
   projectSubmissions?: Prisma.ProjectSubmissionUncheckedUpdateManyWithoutUserNestedInput
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProgressesInput = {
@@ -877,6 +1194,9 @@ export type UserCreateWithoutProgressesInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -888,6 +1208,8 @@ export type UserCreateWithoutProgressesInput = {
   questions?: Prisma.QuestionCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProgressesInput = {
@@ -898,6 +1220,9 @@ export type UserUncheckedCreateWithoutProgressesInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -909,6 +1234,8 @@ export type UserUncheckedCreateWithoutProgressesInput = {
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProgressesInput = {
@@ -935,6 +1262,9 @@ export type UserUpdateWithoutProgressesInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -946,6 +1276,8 @@ export type UserUpdateWithoutProgressesInput = {
   questions?: Prisma.QuestionUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProgressesInput = {
@@ -956,6 +1288,9 @@ export type UserUncheckedUpdateWithoutProgressesInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -967,6 +1302,8 @@ export type UserUncheckedUpdateWithoutProgressesInput = {
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectSubmissionsInput = {
@@ -977,6 +1314,9 @@ export type UserCreateWithoutProjectSubmissionsInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -988,6 +1328,8 @@ export type UserCreateWithoutProjectSubmissionsInput = {
   questions?: Prisma.QuestionCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectSubmissionsInput = {
@@ -998,6 +1340,9 @@ export type UserUncheckedCreateWithoutProjectSubmissionsInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -1009,6 +1354,8 @@ export type UserUncheckedCreateWithoutProjectSubmissionsInput = {
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectSubmissionsInput = {
@@ -1035,6 +1382,9 @@ export type UserUpdateWithoutProjectSubmissionsInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1046,6 +1396,8 @@ export type UserUpdateWithoutProjectSubmissionsInput = {
   questions?: Prisma.QuestionUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectSubmissionsInput = {
@@ -1056,6 +1408,9 @@ export type UserUncheckedUpdateWithoutProjectSubmissionsInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1067,6 +1422,8 @@ export type UserUncheckedUpdateWithoutProjectSubmissionsInput = {
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutBookingsInput = {
@@ -1077,6 +1434,9 @@ export type UserCreateWithoutBookingsInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -1088,6 +1448,8 @@ export type UserCreateWithoutBookingsInput = {
   questions?: Prisma.QuestionCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBookingsInput = {
@@ -1098,6 +1460,9 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -1109,6 +1474,8 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBookingsInput = {
@@ -1135,6 +1502,9 @@ export type UserUpdateWithoutBookingsInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1146,6 +1516,8 @@ export type UserUpdateWithoutBookingsInput = {
   questions?: Prisma.QuestionUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBookingsInput = {
@@ -1156,6 +1528,9 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1167,6 +1542,128 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutQuizAttemptsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
+  avatarUrl?: string | null
+  bio?: string | null
+  headline?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  center?: Prisma.CenterCreateNestedOneWithoutAdminsInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutUserInput
+  progresses?: Prisma.ProgressCreateNestedManyWithoutUserInput
+  projectSubmissions?: Prisma.ProjectSubmissionCreateNestedManyWithoutUserInput
+  questions?: Prisma.QuestionCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutQuizAttemptsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
+  avatarUrl?: string | null
+  bio?: string | null
+  headline?: string | null
+  centerId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutUserInput
+  progresses?: Prisma.ProgressUncheckedCreateNestedManyWithoutUserInput
+  projectSubmissions?: Prisma.ProjectSubmissionUncheckedCreateNestedManyWithoutUserInput
+  questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutQuizAttemptsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutQuizAttemptsInput, Prisma.UserUncheckedCreateWithoutQuizAttemptsInput>
+}
+
+export type UserUpsertWithoutQuizAttemptsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutQuizAttemptsInput, Prisma.UserUncheckedUpdateWithoutQuizAttemptsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutQuizAttemptsInput, Prisma.UserUncheckedCreateWithoutQuizAttemptsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutQuizAttemptsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutQuizAttemptsInput, Prisma.UserUncheckedUpdateWithoutQuizAttemptsInput>
+}
+
+export type UserUpdateWithoutQuizAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  center?: Prisma.CenterUpdateOneWithoutAdminsNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutUserNestedInput
+  progresses?: Prisma.ProgressUpdateManyWithoutUserNestedInput
+  projectSubmissions?: Prisma.ProjectSubmissionUpdateManyWithoutUserNestedInput
+  questions?: Prisma.QuestionUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutQuizAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  centerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutUserNestedInput
+  progresses?: Prisma.ProgressUncheckedUpdateManyWithoutUserNestedInput
+  projectSubmissions?: Prisma.ProjectSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  questions?: Prisma.QuestionUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutQuestionsInput = {
@@ -1177,6 +1674,9 @@ export type UserCreateWithoutQuestionsInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -1188,6 +1688,8 @@ export type UserCreateWithoutQuestionsInput = {
   projectSubmissions?: Prisma.ProjectSubmissionCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutQuestionsInput = {
@@ -1198,6 +1700,9 @@ export type UserUncheckedCreateWithoutQuestionsInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -1209,6 +1714,8 @@ export type UserUncheckedCreateWithoutQuestionsInput = {
   projectSubmissions?: Prisma.ProjectSubmissionUncheckedCreateNestedManyWithoutUserInput
   replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutQuestionsInput = {
@@ -1235,6 +1742,9 @@ export type UserUpdateWithoutQuestionsInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1246,6 +1756,8 @@ export type UserUpdateWithoutQuestionsInput = {
   projectSubmissions?: Prisma.ProjectSubmissionUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQuestionsInput = {
@@ -1256,6 +1768,9 @@ export type UserUncheckedUpdateWithoutQuestionsInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1267,6 +1782,8 @@ export type UserUncheckedUpdateWithoutQuestionsInput = {
   projectSubmissions?: Prisma.ProjectSubmissionUncheckedUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRepliesInput = {
@@ -1277,6 +1794,9 @@ export type UserCreateWithoutRepliesInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -1288,6 +1808,8 @@ export type UserCreateWithoutRepliesInput = {
   projectSubmissions?: Prisma.ProjectSubmissionCreateNestedManyWithoutUserInput
   questions?: Prisma.QuestionCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRepliesInput = {
@@ -1298,6 +1820,9 @@ export type UserUncheckedCreateWithoutRepliesInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -1309,6 +1834,8 @@ export type UserUncheckedCreateWithoutRepliesInput = {
   projectSubmissions?: Prisma.ProjectSubmissionUncheckedCreateNestedManyWithoutUserInput
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutUserInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRepliesInput = {
@@ -1335,6 +1862,9 @@ export type UserUpdateWithoutRepliesInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1346,6 +1876,8 @@ export type UserUpdateWithoutRepliesInput = {
   projectSubmissions?: Prisma.ProjectSubmissionUpdateManyWithoutUserNestedInput
   questions?: Prisma.QuestionUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRepliesInput = {
@@ -1356,6 +1888,9 @@ export type UserUncheckedUpdateWithoutRepliesInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1367,6 +1902,8 @@ export type UserUncheckedUpdateWithoutRepliesInput = {
   projectSubmissions?: Prisma.ProjectSubmissionUncheckedUpdateManyWithoutUserNestedInput
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyCenterInput = {
@@ -1377,6 +1914,9 @@ export type UserCreateManyCenterInput = {
   lastName: string
   phone?: string | null
   role?: $Enums.Role
+  termsAcceptedAt?: Date | string | null
+  termsVersion?: string | null
+  tokenVersion?: number
   avatarUrl?: string | null
   bio?: string | null
   headline?: string | null
@@ -1392,6 +1932,9 @@ export type UserUpdateWithoutCenterInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1403,6 +1946,8 @@ export type UserUpdateWithoutCenterInput = {
   questions?: Prisma.QuestionUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCenterInput = {
@@ -1413,6 +1958,9 @@ export type UserUncheckedUpdateWithoutCenterInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1424,6 +1972,8 @@ export type UserUncheckedUpdateWithoutCenterInput = {
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutUserNestedInput
   replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutCenterInput = {
@@ -1434,6 +1984,9 @@ export type UserUncheckedUpdateManyWithoutCenterInput = {
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenVersion?: Prisma.IntFieldUpdateOperationsInput | number
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   headline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1453,6 +2006,8 @@ export type UserCountOutputType = {
   questions: number
   replies: number
   orders: number
+  quizAttempts: number
+  passwordResets: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1462,6 +2017,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   questions?: boolean | UserCountOutputTypeCountQuestionsArgs
   replies?: boolean | UserCountOutputTypeCountRepliesArgs
   orders?: boolean | UserCountOutputTypeCountOrdersArgs
+  quizAttempts?: boolean | UserCountOutputTypeCountQuizAttemptsArgs
+  passwordResets?: boolean | UserCountOutputTypeCountPasswordResetsArgs
 }
 
 /**
@@ -1516,6 +2073,20 @@ export type UserCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types.Ext
   where?: Prisma.OrderWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountQuizAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.QuizAttemptWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPasswordResetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PasswordResetWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1525,6 +2096,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   lastName?: boolean
   phone?: boolean
   role?: boolean
+  termsAcceptedAt?: boolean
+  termsVersion?: boolean
+  tokenVersion?: boolean
   avatarUrl?: boolean
   bio?: boolean
   headline?: boolean
@@ -1538,6 +2112,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   questions?: boolean | Prisma.User$questionsArgs<ExtArgs>
   replies?: boolean | Prisma.User$repliesArgs<ExtArgs>
   orders?: boolean | Prisma.User$ordersArgs<ExtArgs>
+  quizAttempts?: boolean | Prisma.User$quizAttemptsArgs<ExtArgs>
+  passwordResets?: boolean | Prisma.User$passwordResetsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1549,6 +2125,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   lastName?: boolean
   phone?: boolean
   role?: boolean
+  termsAcceptedAt?: boolean
+  termsVersion?: boolean
+  tokenVersion?: boolean
   avatarUrl?: boolean
   bio?: boolean
   headline?: boolean
@@ -1566,6 +2145,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   lastName?: boolean
   phone?: boolean
   role?: boolean
+  termsAcceptedAt?: boolean
+  termsVersion?: boolean
+  tokenVersion?: boolean
   avatarUrl?: boolean
   bio?: boolean
   headline?: boolean
@@ -1583,6 +2165,9 @@ export type UserSelectScalar = {
   lastName?: boolean
   phone?: boolean
   role?: boolean
+  termsAcceptedAt?: boolean
+  termsVersion?: boolean
+  tokenVersion?: boolean
   avatarUrl?: boolean
   bio?: boolean
   headline?: boolean
@@ -1591,7 +2176,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "firstName" | "lastName" | "phone" | "role" | "avatarUrl" | "bio" | "headline" | "centerId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "firstName" | "lastName" | "phone" | "role" | "termsAcceptedAt" | "termsVersion" | "tokenVersion" | "avatarUrl" | "bio" | "headline" | "centerId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   center?: boolean | Prisma.User$centerArgs<ExtArgs>
   bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
@@ -1600,6 +2185,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   questions?: boolean | Prisma.User$questionsArgs<ExtArgs>
   replies?: boolean | Prisma.User$repliesArgs<ExtArgs>
   orders?: boolean | Prisma.User$ordersArgs<ExtArgs>
+  quizAttempts?: boolean | Prisma.User$quizAttemptsArgs<ExtArgs>
+  passwordResets?: boolean | Prisma.User$passwordResetsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1619,6 +2206,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     questions: Prisma.$QuestionPayload<ExtArgs>[]
     replies: Prisma.$ReplyPayload<ExtArgs>[]
     orders: Prisma.$OrderPayload<ExtArgs>[]
+    quizAttempts: Prisma.$QuizAttemptPayload<ExtArgs>[]
+    passwordResets: Prisma.$PasswordResetPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1628,6 +2217,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     lastName: string
     phone: string | null
     role: $Enums.Role
+    termsAcceptedAt: Date | null
+    termsVersion: string | null
+    tokenVersion: number
     avatarUrl: string | null
     bio: string | null
     headline: string | null
@@ -2035,6 +2627,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   questions<T extends Prisma.User$questionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   replies<T extends Prisma.User$repliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orders<T extends Prisma.User$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  quizAttempts<T extends Prisma.User$quizAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$quizAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuizAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  passwordResets<T extends Prisma.User$passwordResetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$passwordResetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2071,6 +2665,9 @@ export interface UserFieldRefs {
   readonly lastName: Prisma.FieldRef<"User", 'String'>
   readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
+  readonly termsAcceptedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly termsVersion: Prisma.FieldRef<"User", 'String'>
+  readonly tokenVersion: Prisma.FieldRef<"User", 'Int'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly bio: Prisma.FieldRef<"User", 'String'>
   readonly headline: Prisma.FieldRef<"User", 'String'>
@@ -2633,6 +3230,54 @@ export type User$ordersArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.OrderScalarFieldEnum | Prisma.OrderScalarFieldEnum[]
+}
+
+/**
+ * User.quizAttempts
+ */
+export type User$quizAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the QuizAttempt
+   */
+  select?: Prisma.QuizAttemptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the QuizAttempt
+   */
+  omit?: Prisma.QuizAttemptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.QuizAttemptInclude<ExtArgs> | null
+  where?: Prisma.QuizAttemptWhereInput
+  orderBy?: Prisma.QuizAttemptOrderByWithRelationInput | Prisma.QuizAttemptOrderByWithRelationInput[]
+  cursor?: Prisma.QuizAttemptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.QuizAttemptScalarFieldEnum | Prisma.QuizAttemptScalarFieldEnum[]
+}
+
+/**
+ * User.passwordResets
+ */
+export type User$passwordResetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PasswordReset
+   */
+  select?: Prisma.PasswordResetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PasswordReset
+   */
+  omit?: Prisma.PasswordResetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PasswordResetInclude<ExtArgs> | null
+  where?: Prisma.PasswordResetWhereInput
+  orderBy?: Prisma.PasswordResetOrderByWithRelationInput | Prisma.PasswordResetOrderByWithRelationInput[]
+  cursor?: Prisma.PasswordResetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PasswordResetScalarFieldEnum | Prisma.PasswordResetScalarFieldEnum[]
 }
 
 /**

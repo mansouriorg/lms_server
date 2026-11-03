@@ -1,8 +1,41 @@
 // src/common/filters/http-exception.filter.ts
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
+// Every error response has the same shape, and `message` is always one
+// readable sentence the web app can show as it is:
+//   { statusCode, message, errors?, path, timestamp }
+// `errors` lists each message when there are several (validation errors).
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 
-@Catch() // Catching everything (no specific exception type passed)
+// Shown for unexpected errors; the details only go to the server log.
+export const INTERNAL_ERROR_MESSAGE =
+  'Something went wrong on our side. Please try again.';
+
+// An HttpException body is a string, or an object whose `message` is a
+// string or (for validation errors) a list of strings.
+export function readMessages(body: unknown): string[] {
+  if (typeof body === 'string') {
+    return [body];
+  }
+  if (typeof body === 'object' && body !== null && 'message' in body) {
+    const { message } = body as { message: unknown };
+    if (Array.isArray(message)) {
+      return message.map((item) => String(item));
+    }
+    if (typeof message === 'string') {
+      return [message];
+    }
+  }
+  return ['The request could not be completed.'];
+}
+
+@Catch() // Catches everything, not only HttpException
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
 
@@ -11,32 +44,31 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    // Determine the status code
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    // Determine the error message
-    const message =
+    const messages =
       exception instanceof HttpException
-        ? exception.getResponse()
-        : 'Une erreur interne du serveur est survenue.';
+        ? readMessages(exception.getResponse())
+        : [INTERNAL_ERROR_MESSAGE];
 
-    // Log the exact error for your backend terminal so you can debug it
-    if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
+    // Server errors are logged with their details, for the developer only
+    if (status >= 500) {
+      const details =
+        exception instanceof Error ? exception.message : 'unknown error';
       this.logger.error(
-        `[${request.method}] ${request.url} - Erreur critique: ${exception instanceof Error ? exception.message : 'Inconnue'}`,
-        exception instanceof Error ? exception.stack : '',
+        `[${request.method}] ${request.url} - ${details}`,
+        exception instanceof Error ? exception.stack : undefined,
       );
     }
 
-    // Force a clean JSON response for the frontend
     response.status(status).json({
       statusCode: status,
-      timestamp: new Date().toISOString(),
+      message: messages.join(' '),
+      ...(messages.length > 1 ? { errors: messages } : {}),
       path: request.url,
-      error: typeof message === 'string' ? message : (message as any).message || message,
+      timestamp: new Date().toISOString(),
     });
   }
 }

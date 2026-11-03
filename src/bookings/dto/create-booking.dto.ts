@@ -1,28 +1,48 @@
-import { IsString, IsNotEmpty, IsEnum, IsDateString } from 'class-validator';
-import { BookingType } from 'src/generated/prisma/enums'; // Make sure this import path matches your Prisma setup
+// src/bookings/dto/create-booking.dto.ts
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  Matches,
+  MaxLength,
+} from 'class-validator';
+import { Transform } from 'class-transformer';
+import { BookingType } from 'src/generated/prisma/enums';
+import { trimText } from '../../common/text';
 
+const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+// POST /bookings: a student asks an academy admin for a live session (a
+// mentoring call or a webinar). The service also checks that the day exists
+// and is not past, that the end is after the start, and who may be booked.
 export class CreateBookingDto {
   @IsString()
-  @IsNotEmpty({ message: 'Le titre de la session est requis.' })
+  @Transform(trimText)
+  @IsNotEmpty({ message: 'Please give the session a title.' })
+  @MaxLength(120, { message: 'The title can have at most 120 characters.' })
   title: string;
 
-  @IsEnum(BookingType, { message: 'Le type de réservation doit être MENTORSHIP ou WEBINAR.' })
-  @IsNotEmpty({ message: 'Le type est requis.' })
+  @IsEnum(BookingType, {
+    message: 'The session type must be MENTORSHIP or WEBINAR.',
+  })
   type: BookingType;
 
-  @IsDateString({}, { message: 'La date doit être un format ISO valide (ex: 2026-10-24T00:00:00.000Z).' })
-  @IsNotEmpty({ message: 'La date est requise.' })
+  // A calendar day
+  @IsString()
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
+    message: 'The date must look like 2026-11-05.',
+  })
   date: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'L\'heure de début est requise (ex: 14:00).' })
+  @Matches(TIME, { message: 'The start time must look like 14:00.' })
   startTime: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'L\'heure de fin est requise (ex: 15:00).' })
+  @Matches(TIME, { message: 'The end time must look like 15:00.' })
   endTime: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'L\'ID de l\'instructeur est requis.' })
+  @IsNotEmpty({ message: 'Please choose who you want to meet.' })
   instructorId: string;
 }

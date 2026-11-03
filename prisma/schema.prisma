@@ -74,6 +74,15 @@ model User {
   phone        String?
   role         Role    @default(STUDENT)
 
+  // When the account accepted the Terms of Service and the Privacy Policy,
+  // and which version (the date shown on the pages). NULL: not yet.
+  termsAcceptedAt DateTime?
+  termsVersion    String?
+
+  // Raised when the password changes: the sign-in tokens given before stop
+  // working (src/auth/jwt.strategy.ts)
+  tokenVersion Int @default(0)
+
   // E-Learning Profile Fields
   avatarUrl String?
   bio       String?
@@ -88,9 +97,30 @@ model User {
   questions          Question[]
   replies            Reply[]
   orders             Order[]
+  quizAttempts       QuizAttempt[]
+  passwordResets     PasswordReset[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// A forgotten password: the user asked on the Forgot password page (or a
+// platform admin started it), then a platform admin created a one-time link
+// and sent it by hand. Only the sha256 of the link's secret is stored.
+model PasswordReset {
+  id          String    @id @default(cuid())
+  requestedAt DateTime? // When the user asked (null: started by an admin)
+  tokenHash   String?   @unique // sha256 of the secret of the current link
+  expiresAt   DateTime? // The link works until then
+  usedAt      DateTime? // When the new password was set (or the reset closed)
+
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Center {
@@ -101,8 +131,10 @@ model Center {
   contactPhone String
 
   // Relations
-  admins User[]
-  stages Stage[]
+  admins   User[]
+  stages   Stage[]
+  coupons  Coupon[]
+  products Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -120,6 +152,10 @@ model Stage {
   category     String?
   level        String? // e.g., Beginner, Intermediate, Advanced
   instructorId String // ID of the instructor who created it
+
+  // The final project: what the students build and send, written by the
+  // academy (plain text). NULL: the course has no project.
+  projectBrief String?
 
   // Relations
   centerId           String
@@ -143,6 +179,8 @@ model Module {
   stage    Stage          @relation(fields: [stageId], references: [id], onDelete: Cascade)
   lessons  Lesson[]
   quizBank QuizQuestion[] // Quizzes belonging to this module
+  // The quizzes of this module finished by students
+  quizAttempts QuizAttempt[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -163,7 +201,10 @@ model Coupon {
   isActive           Boolean   @default(true)
 
   // Relations
-  orders Order[]
+  orders   Order[]
+  // The academy that owns the coupon (empty = platform-wide, super admins only)
+  centerId String?
+  center   Center? @relation(fields: [centerId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -195,6 +236,9 @@ model Product {
 
   // Relations
   orderItems OrderItem[]
+  // The academy that owns the product (empty = platform-wide, super admins only)
+  centerId   String?
+  center     Center?     @relation(fields: [centerId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -310,6 +354,24 @@ model QuizQuestion {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// A module quiz finished by a student: how many of its questions they
+// answered right (graded by the server). The course player shows their best.
+model QuizAttempt {
+  id      String @id @default(cuid())
+  correct Int // Questions answered right
+  total   Int // Questions in the quiz
+
+  // Relations
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  moduleId String
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, moduleId])
 }
 
 // -----------------------------------------------------------------------------

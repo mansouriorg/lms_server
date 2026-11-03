@@ -1,13 +1,14 @@
 // src/auth/dto/login.dto.ts
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { emailText } from '../../common/text';
 
 export class LoginDto {
-  @IsEmail({}, { message: 'Veuillez fournir un email valide.' })
-  @Transform(({ value }) => value?.trim().toLowerCase())
+  @IsEmail({}, { message: 'Please enter a valid email address.' })
+  @Transform(emailText)
   email: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'Le mot de passe est requis.' })
+  @IsNotEmpty({ message: 'Please enter your password.' })
   password: string;
 }

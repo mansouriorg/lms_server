@@ -17,7 +17,14 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:scripts": "node --test scripts/escaped-text.test.mjs scripts/lms-db-url.test.mjs scripts/make-platform-admin.test.mjs",
+    "check:escaped-text": "node scripts/check-escaped-text.mjs",
+    "db:start": "prisma dev --name lms --detach",
+    "db:stop": "prisma dev stop lms",
+    "db:list": "prisma dev ls",
+    "db:setup": "bash scripts/setup-local-db.sh",
+    "admin:make": "node scripts/make-platform-admin.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.14",
@@ -89,6 +96,10 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1",
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    }
   }
 }

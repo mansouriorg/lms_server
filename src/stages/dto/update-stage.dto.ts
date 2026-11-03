@@ -9,6 +9,6 @@ export class UpdateStageDto extends PartialType(CreateStageDto) {
   
   // We add 'status' here because admins might want to change it from DRAFT to PUBLISHED
   @IsOptional()
-  @IsEnum(StageStatus, { message: 'Statut invalide.' })
+  @IsEnum(StageStatus, { message: 'Invalid status.' })
   status?: StageStatus;
 }

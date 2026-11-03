@@ -200,6 +200,8 @@ export type CenterWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Center"> | Date | string
   admins?: Prisma.UserListRelationFilter
   stages?: Prisma.StageListRelationFilter
+  coupons?: Prisma.CouponListRelationFilter
+  products?: Prisma.ProductListRelationFilter
 }
 
 export type CenterOrderByWithRelationInput = {
@@ -212,6 +214,8 @@ export type CenterOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   admins?: Prisma.UserOrderByRelationAggregateInput
   stages?: Prisma.StageOrderByRelationAggregateInput
+  coupons?: Prisma.CouponOrderByRelationAggregateInput
+  products?: Prisma.ProductOrderByRelationAggregateInput
 }
 
 export type CenterWhereUniqueInput = Prisma.AtLeast<{
@@ -227,6 +231,8 @@ export type CenterWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Center"> | Date | string
   admins?: Prisma.UserListRelationFilter
   stages?: Prisma.StageListRelationFilter
+  coupons?: Prisma.CouponListRelationFilter
+  products?: Prisma.ProductListRelationFilter
 }, "id">
 
 export type CenterOrderByWithAggregationInput = {
@@ -265,6 +271,8 @@ export type CenterCreateInput = {
   updatedAt?: Date | string
   admins?: Prisma.UserCreateNestedManyWithoutCenterInput
   stages?: Prisma.StageCreateNestedManyWithoutCenterInput
+  coupons?: Prisma.CouponCreateNestedManyWithoutCenterInput
+  products?: Prisma.ProductCreateNestedManyWithoutCenterInput
 }
 
 export type CenterUncheckedCreateInput = {
@@ -277,6 +285,8 @@ export type CenterUncheckedCreateInput = {
   updatedAt?: Date | string
   admins?: Prisma.UserUncheckedCreateNestedManyWithoutCenterInput
   stages?: Prisma.StageUncheckedCreateNestedManyWithoutCenterInput
+  coupons?: Prisma.CouponUncheckedCreateNestedManyWithoutCenterInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCenterInput
 }
 
 export type CenterUpdateInput = {
@@ -289,6 +299,8 @@ export type CenterUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admins?: Prisma.UserUpdateManyWithoutCenterNestedInput
   stages?: Prisma.StageUpdateManyWithoutCenterNestedInput
+  coupons?: Prisma.CouponUpdateManyWithoutCenterNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCenterNestedInput
 }
 
 export type CenterUncheckedUpdateInput = {
@@ -301,6 +313,8 @@ export type CenterUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admins?: Prisma.UserUncheckedUpdateManyWithoutCenterNestedInput
   stages?: Prisma.StageUncheckedUpdateManyWithoutCenterNestedInput
+  coupons?: Prisma.CouponUncheckedUpdateManyWithoutCenterNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCenterNestedInput
 }
 
 export type CenterCreateManyInput = {
@@ -403,6 +417,38 @@ export type CenterUpdateOneRequiredWithoutStagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CenterUpdateToOneWithWhereWithoutStagesInput, Prisma.CenterUpdateWithoutStagesInput>, Prisma.CenterUncheckedUpdateWithoutStagesInput>
 }
 
+export type CenterCreateNestedOneWithoutCouponsInput = {
+  create?: Prisma.XOR<Prisma.CenterCreateWithoutCouponsInput, Prisma.CenterUncheckedCreateWithoutCouponsInput>
+  connectOrCreate?: Prisma.CenterCreateOrConnectWithoutCouponsInput
+  connect?: Prisma.CenterWhereUniqueInput
+}
+
+export type CenterUpdateOneWithoutCouponsNestedInput = {
+  create?: Prisma.XOR<Prisma.CenterCreateWithoutCouponsInput, Prisma.CenterUncheckedCreateWithoutCouponsInput>
+  connectOrCreate?: Prisma.CenterCreateOrConnectWithoutCouponsInput
+  upsert?: Prisma.CenterUpsertWithoutCouponsInput
+  disconnect?: Prisma.CenterWhereInput | boolean
+  delete?: Prisma.CenterWhereInput | boolean
+  connect?: Prisma.CenterWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CenterUpdateToOneWithWhereWithoutCouponsInput, Prisma.CenterUpdateWithoutCouponsInput>, Prisma.CenterUncheckedUpdateWithoutCouponsInput>
+}
+
+export type CenterCreateNestedOneWithoutProductsInput = {
+  create?: Prisma.XOR<Prisma.CenterCreateWithoutProductsInput, Prisma.CenterUncheckedCreateWithoutProductsInput>
+  connectOrCreate?: Prisma.CenterCreateOrConnectWithoutProductsInput
+  connect?: Prisma.CenterWhereUniqueInput
+}
+
+export type CenterUpdateOneWithoutProductsNestedInput = {
+  create?: Prisma.XOR<Prisma.CenterCreateWithoutProductsInput, Prisma.CenterUncheckedCreateWithoutProductsInput>
+  connectOrCreate?: Prisma.CenterCreateOrConnectWithoutProductsInput
+  upsert?: Prisma.CenterUpsertWithoutProductsInput
+  disconnect?: Prisma.CenterWhereInput | boolean
+  delete?: Prisma.CenterWhereInput | boolean
+  connect?: Prisma.CenterWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CenterUpdateToOneWithWhereWithoutProductsInput, Prisma.CenterUpdateWithoutProductsInput>, Prisma.CenterUncheckedUpdateWithoutProductsInput>
+}
+
 export type CenterCreateWithoutAdminsInput = {
   id?: string
   name: string
@@ -412,6 +458,8 @@ export type CenterCreateWithoutAdminsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   stages?: Prisma.StageCreateNestedManyWithoutCenterInput
+  coupons?: Prisma.CouponCreateNestedManyWithoutCenterInput
+  products?: Prisma.ProductCreateNestedManyWithoutCenterInput
 }
 
 export type CenterUncheckedCreateWithoutAdminsInput = {
@@ -423,6 +471,8 @@ export type CenterUncheckedCreateWithoutAdminsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   stages?: Prisma.StageUncheckedCreateNestedManyWithoutCenterInput
+  coupons?: Prisma.CouponUncheckedCreateNestedManyWithoutCenterInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCenterInput
 }
 
 export type CenterCreateOrConnectWithoutAdminsInput = {
@@ -450,6 +500,8 @@ export type CenterUpdateWithoutAdminsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageUpdateManyWithoutCenterNestedInput
+  coupons?: Prisma.CouponUpdateManyWithoutCenterNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCenterNestedInput
 }
 
 export type CenterUncheckedUpdateWithoutAdminsInput = {
@@ -461,6 +513,8 @@ export type CenterUncheckedUpdateWithoutAdminsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageUncheckedUpdateManyWithoutCenterNestedInput
+  coupons?: Prisma.CouponUncheckedUpdateManyWithoutCenterNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCenterNestedInput
 }
 
 export type CenterCreateWithoutStagesInput = {
@@ -472,6 +526,8 @@ export type CenterCreateWithoutStagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   admins?: Prisma.UserCreateNestedManyWithoutCenterInput
+  coupons?: Prisma.CouponCreateNestedManyWithoutCenterInput
+  products?: Prisma.ProductCreateNestedManyWithoutCenterInput
 }
 
 export type CenterUncheckedCreateWithoutStagesInput = {
@@ -483,6 +539,8 @@ export type CenterUncheckedCreateWithoutStagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   admins?: Prisma.UserUncheckedCreateNestedManyWithoutCenterInput
+  coupons?: Prisma.CouponUncheckedCreateNestedManyWithoutCenterInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCenterInput
 }
 
 export type CenterCreateOrConnectWithoutStagesInput = {
@@ -510,6 +568,8 @@ export type CenterUpdateWithoutStagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admins?: Prisma.UserUpdateManyWithoutCenterNestedInput
+  coupons?: Prisma.CouponUpdateManyWithoutCenterNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCenterNestedInput
 }
 
 export type CenterUncheckedUpdateWithoutStagesInput = {
@@ -521,6 +581,144 @@ export type CenterUncheckedUpdateWithoutStagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admins?: Prisma.UserUncheckedUpdateManyWithoutCenterNestedInput
+  coupons?: Prisma.CouponUncheckedUpdateManyWithoutCenterNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCenterNestedInput
+}
+
+export type CenterCreateWithoutCouponsInput = {
+  id?: string
+  name: string
+  location: string
+  contactEmail: string
+  contactPhone: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  admins?: Prisma.UserCreateNestedManyWithoutCenterInput
+  stages?: Prisma.StageCreateNestedManyWithoutCenterInput
+  products?: Prisma.ProductCreateNestedManyWithoutCenterInput
+}
+
+export type CenterUncheckedCreateWithoutCouponsInput = {
+  id?: string
+  name: string
+  location: string
+  contactEmail: string
+  contactPhone: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  admins?: Prisma.UserUncheckedCreateNestedManyWithoutCenterInput
+  stages?: Prisma.StageUncheckedCreateNestedManyWithoutCenterInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCenterInput
+}
+
+export type CenterCreateOrConnectWithoutCouponsInput = {
+  where: Prisma.CenterWhereUniqueInput
+  create: Prisma.XOR<Prisma.CenterCreateWithoutCouponsInput, Prisma.CenterUncheckedCreateWithoutCouponsInput>
+}
+
+export type CenterUpsertWithoutCouponsInput = {
+  update: Prisma.XOR<Prisma.CenterUpdateWithoutCouponsInput, Prisma.CenterUncheckedUpdateWithoutCouponsInput>
+  create: Prisma.XOR<Prisma.CenterCreateWithoutCouponsInput, Prisma.CenterUncheckedCreateWithoutCouponsInput>
+  where?: Prisma.CenterWhereInput
+}
+
+export type CenterUpdateToOneWithWhereWithoutCouponsInput = {
+  where?: Prisma.CenterWhereInput
+  data: Prisma.XOR<Prisma.CenterUpdateWithoutCouponsInput, Prisma.CenterUncheckedUpdateWithoutCouponsInput>
+}
+
+export type CenterUpdateWithoutCouponsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  admins?: Prisma.UserUpdateManyWithoutCenterNestedInput
+  stages?: Prisma.StageUpdateManyWithoutCenterNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCenterNestedInput
+}
+
+export type CenterUncheckedUpdateWithoutCouponsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  admins?: Prisma.UserUncheckedUpdateManyWithoutCenterNestedInput
+  stages?: Prisma.StageUncheckedUpdateManyWithoutCenterNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCenterNestedInput
+}
+
+export type CenterCreateWithoutProductsInput = {
+  id?: string
+  name: string
+  location: string
+  contactEmail: string
+  contactPhone: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  admins?: Prisma.UserCreateNestedManyWithoutCenterInput
+  stages?: Prisma.StageCreateNestedManyWithoutCenterInput
+  coupons?: Prisma.CouponCreateNestedManyWithoutCenterInput
+}
+
+export type CenterUncheckedCreateWithoutProductsInput = {
+  id?: string
+  name: string
+  location: string
+  contactEmail: string
+  contactPhone: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  admins?: Prisma.UserUncheckedCreateNestedManyWithoutCenterInput
+  stages?: Prisma.StageUncheckedCreateNestedManyWithoutCenterInput
+  coupons?: Prisma.CouponUncheckedCreateNestedManyWithoutCenterInput
+}
+
+export type CenterCreateOrConnectWithoutProductsInput = {
+  where: Prisma.CenterWhereUniqueInput
+  create: Prisma.XOR<Prisma.CenterCreateWithoutProductsInput, Prisma.CenterUncheckedCreateWithoutProductsInput>
+}
+
+export type CenterUpsertWithoutProductsInput = {
+  update: Prisma.XOR<Prisma.CenterUpdateWithoutProductsInput, Prisma.CenterUncheckedUpdateWithoutProductsInput>
+  create: Prisma.XOR<Prisma.CenterCreateWithoutProductsInput, Prisma.CenterUncheckedCreateWithoutProductsInput>
+  where?: Prisma.CenterWhereInput
+}
+
+export type CenterUpdateToOneWithWhereWithoutProductsInput = {
+  where?: Prisma.CenterWhereInput
+  data: Prisma.XOR<Prisma.CenterUpdateWithoutProductsInput, Prisma.CenterUncheckedUpdateWithoutProductsInput>
+}
+
+export type CenterUpdateWithoutProductsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  admins?: Prisma.UserUpdateManyWithoutCenterNestedInput
+  stages?: Prisma.StageUpdateManyWithoutCenterNestedInput
+  coupons?: Prisma.CouponUpdateManyWithoutCenterNestedInput
+}
+
+export type CenterUncheckedUpdateWithoutProductsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  admins?: Prisma.UserUncheckedUpdateManyWithoutCenterNestedInput
+  stages?: Prisma.StageUncheckedUpdateManyWithoutCenterNestedInput
+  coupons?: Prisma.CouponUncheckedUpdateManyWithoutCenterNestedInput
 }
 
 
@@ -531,11 +729,15 @@ export type CenterUncheckedUpdateWithoutStagesInput = {
 export type CenterCountOutputType = {
   admins: number
   stages: number
+  coupons: number
+  products: number
 }
 
 export type CenterCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   admins?: boolean | CenterCountOutputTypeCountAdminsArgs
   stages?: boolean | CenterCountOutputTypeCountStagesArgs
+  coupons?: boolean | CenterCountOutputTypeCountCouponsArgs
+  products?: boolean | CenterCountOutputTypeCountProductsArgs
 }
 
 /**
@@ -562,6 +764,20 @@ export type CenterCountOutputTypeCountStagesArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.StageWhereInput
 }
 
+/**
+ * CenterCountOutputType without action
+ */
+export type CenterCountOutputTypeCountCouponsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CouponWhereInput
+}
+
+/**
+ * CenterCountOutputType without action
+ */
+export type CenterCountOutputTypeCountProductsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductWhereInput
+}
+
 
 export type CenterSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -573,6 +789,8 @@ export type CenterSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   updatedAt?: boolean
   admins?: boolean | Prisma.Center$adminsArgs<ExtArgs>
   stages?: boolean | Prisma.Center$stagesArgs<ExtArgs>
+  coupons?: boolean | Prisma.Center$couponsArgs<ExtArgs>
+  products?: boolean | Prisma.Center$productsArgs<ExtArgs>
   _count?: boolean | Prisma.CenterCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["center"]>
 
@@ -610,6 +828,8 @@ export type CenterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type CenterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   admins?: boolean | Prisma.Center$adminsArgs<ExtArgs>
   stages?: boolean | Prisma.Center$stagesArgs<ExtArgs>
+  coupons?: boolean | Prisma.Center$couponsArgs<ExtArgs>
+  products?: boolean | Prisma.Center$productsArgs<ExtArgs>
   _count?: boolean | Prisma.CenterCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CenterIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -620,6 +840,8 @@ export type $CenterPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     admins: Prisma.$UserPayload<ExtArgs>[]
     stages: Prisma.$StagePayload<ExtArgs>[]
+    coupons: Prisma.$CouponPayload<ExtArgs>[]
+    products: Prisma.$ProductPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1025,6 +1247,8 @@ export interface Prisma__CenterClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   admins<T extends Prisma.Center$adminsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Center$adminsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stages<T extends Prisma.Center$stagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Center$stagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  coupons<T extends Prisma.Center$couponsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Center$couponsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  products<T extends Prisma.Center$productsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Center$productsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1494,6 +1718,54 @@ export type Center$stagesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.StageScalarFieldEnum | Prisma.StageScalarFieldEnum[]
+}
+
+/**
+ * Center.coupons
+ */
+export type Center$couponsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Coupon
+   */
+  select?: Prisma.CouponSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Coupon
+   */
+  omit?: Prisma.CouponOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CouponInclude<ExtArgs> | null
+  where?: Prisma.CouponWhereInput
+  orderBy?: Prisma.CouponOrderByWithRelationInput | Prisma.CouponOrderByWithRelationInput[]
+  cursor?: Prisma.CouponWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CouponScalarFieldEnum | Prisma.CouponScalarFieldEnum[]
+}
+
+/**
+ * Center.products
+ */
+export type Center$productsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Product
+   */
+  select?: Prisma.ProductSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Product
+   */
+  omit?: Prisma.ProductOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null
+  where?: Prisma.ProductWhereInput
+  orderBy?: Prisma.ProductOrderByWithRelationInput | Prisma.ProductOrderByWithRelationInput[]
+  cursor?: Prisma.ProductWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductScalarFieldEnum | Prisma.ProductScalarFieldEnum[]
 }
 
 /**

@@ -1,126 +1,218 @@
-import { 
-  Injectable, 
-  NotFoundException, 
-  ConflictException, 
-  ForbiddenException 
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import {
+  Actor,
+  academyScope,
+  assertManagesAcademy,
+} from '../common/academy-scope';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 import { GradeSubmissionDto } from './dto/grade-submission.dto';
 import { SubmissionStatus } from 'src/generated/prisma/enums';
 
+export const NO_PROJECT = 'This course has no project to send.';
+export const FEEDBACK_NEEDED =
+  'Say what to change: feedback is needed when you ask for changes.';
+
+// What a student sees of their submission
+const SUBMISSION_FIELDS = {
+  id: true,
+  stageId: true,
+  repoUrl: true,
+  liveUrl: true,
+  status: true,
+  feedback: true,
+  createdAt: true,
+  updatedAt: true,
+} as const;
+
+// What the academy sees of a submission: the student and the course
+const REVIEW_FIELDS = {
+  ...SUBMISSION_FIELDS,
+  user: { select: { id: true, firstName: true, lastName: true, email: true } },
+  stage: { select: { id: true, title: true, projectBrief: true } },
+} as const;
+
+// Projects of courses (one per student and course): the student sends links
+// to their work, the academy approves it or asks for changes. A course has a
+// project when its academy wrote a brief (Stage.projectBrief).
 @Injectable()
 export class ProjectSubmissionsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // --- STUDENT METHODS ---
+  // --- STUDENTS ---
 
+  // POST /project-submissions: the first sending, or a new one after "Needs
+  // work" (back to PENDING). Only for a course the student bought (paid
+  // order) and that has a project; an approved project cannot change.
   async submitProject(userId: string, dto: CreateSubmissionDto) {
-    // 1. Verify the user actually bought this course
-    // We now check OrderItems instead of Bookings!
     const enrollment = await this.prisma.orderItem.findFirst({
       where: {
         stageId: dto.stageId,
-        order: {
-          userId: userId,
-          status: 'PAID', // Ensures the payment actually went through
-        },
+        order: { userId, status: 'PAID' },
       },
     });
-
-    if (!enrollment) {
-      throw new ForbiddenException("Vous n'avez pas acheté ce cours.");
+    if (enrollment === null) {
+      throw new ForbiddenException('You have not bought this course.');
     }
 
-    // 2. Check if a submission already exists
-    const existingSubmission = await this.prisma.projectSubmission.findUnique({
-      where: {
-        userId_stageId: { userId: userId, stageId: dto.stageId },
-      },
+    const stage = await this.prisma.stage.findUnique({
+      where: { id: dto.stageId },
+      select: { projectBrief: true },
+    });
+    if (stage === null || stage.projectBrief === null) {
+      throw new BadRequestException(NO_PROJECT);
+    }
+
+    const links = { repoUrl: dto.repoUrl, liveUrl: dto.liveUrl ?? null };
+    const existing = await this.prisma.projectSubmission.findUnique({
+      where: { userId_stageId: { userId, stageId: dto.stageId } },
     });
 
-    if (existingSubmission) {
-      // If it is already approved, lock it down
-      if (existingSubmission.status === SubmissionStatus.APPROVED) {
-        throw new ConflictException('Votre projet a déjà été approuvé. Vous ne pouvez plus le modifier.');
+    if (existing) {
+      if (existing.status === SubmissionStatus.APPROVED) {
+        throw new ConflictException(
+          'Your project is already approved and can no longer be changed.',
+        );
       }
-      
-      // If it needs work, allow them to update their links and reset the status to PENDING
-      const updatedSubmission = await this.prisma.projectSubmission.update({
-        where: { id: existingSubmission.id },
-        data: {
-          repoUrl: dto.repoUrl,
-          liveUrl: dto.liveUrl,
-          status: SubmissionStatus.PENDING, 
-        },
+      const submission = await this.prisma.projectSubmission.update({
+        where: { id: existing.id },
+        data: { ...links, status: SubmissionStatus.PENDING },
+        select: SUBMISSION_FIELDS,
       });
-
-      return { message: 'Projet mis à jour et soumis pour réévaluation.', submission: updatedSubmission };
+      return { message: 'Project updated and sent for a new review.', submission };
     }
 
-    // 3. Create a brand new submission
-    const newSubmission = await this.prisma.projectSubmission.create({
-      data: {
-        userId: userId,
-        stageId: dto.stageId,
-        repoUrl: dto.repoUrl,
-        liveUrl: dto.liveUrl,
+    const submission = await this.prisma.projectSubmission.create({
+      data: { userId, stageId: dto.stageId, ...links },
+      select: SUBMISSION_FIELDS,
+    });
+    return { message: 'Project sent. The academy will review it.', submission };
+  }
+
+  // GET /project-submissions/mine: the projects of the courses the student
+  // bought, newest purchase first: each course with its brief and the
+  // student's submission (null: not sent yet). A course whose project was
+  // removed stays when the student had sent it.
+  async findMine(userId: string) {
+    const items = await this.prisma.orderItem.findMany({
+      where: { order: { userId, status: 'PAID' }, stageId: { not: null } },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        stage: {
+          select: {
+            id: true,
+            title: true,
+            projectBrief: true,
+            center: { select: { name: true } },
+          },
+        },
       },
     });
+    const submissions = await this.prisma.projectSubmission.findMany({
+      where: { userId },
+      select: SUBMISSION_FIELDS,
+    });
 
-    return { message: 'Projet soumis avec succès.', submission: newSubmission };
+    const seen = new Set<string>();
+    const projects: {
+      course: { id: string; title: string; center: { name: string } };
+      brief: string | null;
+      submission: (typeof submissions)[number] | null;
+    }[] = [];
+    for (const item of items) {
+      const stage = item.stage;
+      if (stage === null || stage === undefined || seen.has(stage.id)) {
+        continue;
+      }
+      seen.add(stage.id);
+      const submission =
+        submissions.find((sent) => sent.stageId === stage.id) ?? null;
+      if (stage.projectBrief === null && submission === null) {
+        continue;
+      }
+      projects.push({
+        course: { id: stage.id, title: stage.title, center: stage.center },
+        brief: stage.projectBrief,
+        submission,
+      });
+    }
+    return projects;
   }
 
   async getMySubmission(userId: string, stageId: string) {
     const submission = await this.prisma.projectSubmission.findUnique({
-      where: { 
-        userId_stageId: { userId: userId, stageId: stageId } 
-      },
-      include: {
-        stage: { select: { title: true } }
-      }
+      where: { userId_stageId: { userId, stageId } },
+      include: { stage: { select: { title: true } } },
     });
-
-    if (!submission) {
-      throw new NotFoundException("Aucune soumission trouvée pour ce cours.");
+    if (submission === null) {
+      throw new NotFoundException('No submission found for this course.');
     }
-
     return submission;
   }
 
-  // --- ADMIN / INSTRUCTOR METHODS ---
+  // --- ACADEMY ADMINS (their academy) AND PLATFORM ADMINS (every academy) ---
 
-  async findAllPending() {
+  // GET /project-submissions/admin/pending: the projects to review, the
+  // oldest first, so that nobody waits too long
+  async findAllPending(actor: Actor) {
+    const scope = await academyScope(this.prisma, actor);
     return this.prisma.projectSubmission.findMany({
-      where: { status: SubmissionStatus.PENDING },
-      include: {
-        user: { select: { firstName: true, lastName: true, email: true } },
-        stage: { select: { title: true } },
+      where: {
+        status: SubmissionStatus.PENDING,
+        ...(scope.all ? {} : { stage: { centerId: scope.centerId } }),
       },
-      orderBy: { createdAt: 'asc' }, // Oldest first to help instructors clear the queue fairly
+      select: REVIEW_FIELDS,
+      orderBy: { updatedAt: 'asc' },
     });
   }
 
-  async gradeSubmission(submissionId: string, dto: GradeSubmissionDto) {
+  // GET /project-submissions/admin/reviewed: the last 100 reviews, the newest
+  // first
+  async findReviewed(actor: Actor) {
+    const scope = await academyScope(this.prisma, actor);
+    return this.prisma.projectSubmission.findMany({
+      where: {
+        status: { in: [SubmissionStatus.APPROVED, SubmissionStatus.NEEDS_WORK] },
+        ...(scope.all ? {} : { stage: { centerId: scope.centerId } }),
+      },
+      select: REVIEW_FIELDS,
+      orderBy: { updatedAt: 'desc' },
+      take: 100,
+    });
+  }
+
+  // PATCH /project-submissions/:id/grade: approve, or ask for changes with
+  // feedback. Academy admins only review their own academy's projects.
+  async gradeSubmission(
+    submissionId: string,
+    dto: GradeSubmissionDto,
+    actor: Actor,
+  ) {
     const submission = await this.prisma.projectSubmission.findUnique({
       where: { id: submissionId },
+      include: { stage: { select: { centerId: true } } },
     });
+    if (submission === null) {
+      throw new NotFoundException('Submission not found.');
+    }
+    await assertManagesAcademy(this.prisma, actor, submission.stage.centerId);
 
-    if (!submission) {
-      throw new NotFoundException('Soumission introuvable.');
+    const feedback = dto.feedback ?? '';
+    if (dto.status === 'NEEDS_WORK' && feedback === '') {
+      throw new BadRequestException(FEEDBACK_NEEDED);
     }
 
-    const gradedSubmission = await this.prisma.projectSubmission.update({
+    const reviewed = await this.prisma.projectSubmission.update({
       where: { id: submissionId },
-      data: {
-        status: dto.status,
-        feedback: dto.feedback,
-      },
-      include: {
-        user: { select: { email: true, firstName: true } } // Useful if you want to trigger an email notification next!
-      }
+      data: { status: dto.status, feedback: feedback === '' ? null : feedback },
+      select: REVIEW_FIELDS,
     });
-
-    return { message: 'Évaluation enregistrée avec succès.', submission: gradedSubmission };
+    return { message: 'Review saved.', submission: reviewed };
   }
 }

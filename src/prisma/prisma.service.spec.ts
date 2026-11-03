@@ -5,6 +5,8 @@ describe('PrismaService', () => {
   let service: PrismaService;
 
   beforeEach(async () => {
+    // Creating the service does not open a connection: it only connects in
+    // onModuleInit, which unit tests do not call.
     const module: TestingModule = await Test.createTestingModule({
       providers: [PrismaService],
     }).compile();

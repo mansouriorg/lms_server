@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionsController } from './questions.controller';
+import { QuestionsService } from './questions.service';
 
 describe('QuestionsController', () => {
   let controller: QuestionsController;
@@ -7,6 +8,8 @@ describe('QuestionsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [QuestionsController],
+      // The controller only passes requests to the service, so a stub is enough.
+      providers: [{ provide: QuestionsService, useValue: {} }],
     }).compile();
 
     controller = module.get<QuestionsController>(QuestionsController);
